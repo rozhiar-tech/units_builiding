@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import { auth, createUserWithEmailAndPassword, firestore, collection, addDoc } from '../firebase/initFirebase' // Update the path
 import { toast } from 'react-toastify'
+import Switch from 'react-switch'
+import { FcFilledFilter } from 'react-icons/fc'
+import Modal from 'react-modal'
+import './custom.css'
+import { productData } from '../data/data'
 
 export default function AddClient() {
     const [formData, setFormData] = useState({
@@ -8,7 +13,6 @@ export default function AddClient() {
         lastName: '',
         propertyCode: '',
         paymentPlan: '',
-        userType: '',
         downPayment: '',
         monthlyPayment: '',
         keyPayment: '',
@@ -17,20 +21,60 @@ export default function AddClient() {
         password: '',
         phone: ''
     })
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const openModal = () => {
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false)
+    }
+    const [filterCriteria, setFilterCriteria] = useState('')
+    const [isUserTypeEnabled, setIsUserTypeEnabled] = useState(false)
+    const [isUserPaymentPlan, setIsUserPaymentPlan] = useState(true)
+    const handleToggleChange = (checked) => {
+        setIsUserTypeEnabled(checked)
+        setFormData((prevData) => ({
+            ...prevData,
+            userType: checked ? 'client' : 'admin' // Set userType to 'client' when enabled, empty otherwise
+            // ... (other fields based on your requirements)
+        }))
+    }
+    const handleToggleChangePayment = (checked) => {
+        setIsUserPaymentPlan(checked)
+        setFormData((prevData) => ({
+            ...prevData,
+            paymentPlan: checked ? 'true' : 'false' // Set userType to 'client' when enabled, empty otherwise
+            // ... (other fields based on your requirements)
+        }))
+    }
     const addClientToFirestore = async (formData) => {
         try {
-            const docRef = await addDoc(collection(firestore, 'Users'), {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                propertyCode: formData.propertyCode,
-                paymentPlan: formData.paymentPlan,
-                userType: formData.userType,
-                downPayment: formData.downPayment,
-                monthlyPayment: formData.monthlyPayment,
-                keyPayment: formData.keyPayment,
-                afterKeyPayment: formData.afterKeyPayment,
-                phone: formData.phone
-            })
+            let docRef
+            if (isUserTypeEnabled) {
+                docRef = await addDoc(collection(firestore, 'Users'), {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    userType: formData.userType,
+                    email: formData.email,
+                    phone: formData.phone,
+                    propertyCode: formData.propertyCode,
+                    paymentPlan: formData.paymentPlan,
+                    downPayment: formData.downPayment,
+                    monthlyPayment: formData.monthlyPayment,
+                    keyPayment: formData.keyPayment,
+                    afterKeyPayment: formData.afterKeyPayment
+                })
+            } else {
+                docRef = await addDoc(collection(firestore, 'Users'), {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    userType: formData.userType,
+                    email: formData.email,
+                    phone: formData.phone
+                })
+            }
 
             console.log('Document written with ID: ', docRef.id)
             return docRef.id // Returning the document ID might be useful for further operations
@@ -55,7 +99,7 @@ export default function AddClient() {
             // Create user in Firebase Authentication
             await createUserWithEmailAndPassword(auth, formData.email, formData.password)
 
-            const { email, password, ...clientData } = formData // Exclude email and password
+            const { password, ...clientData } = formData // Exclude email and password
             await addClientToFirestore(clientData)
 
             // Clear form data after submission
@@ -82,6 +126,26 @@ export default function AddClient() {
 
     return (
         <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
+            <div className="mb-5">
+                <label className="block text-sm text-gray-700">{isUserTypeEnabled ? 'Client' : 'Admin'}</label>
+                <div className="mt-1">
+                    <Switch
+                        onChange={handleToggleChange}
+                        checked={isUserTypeEnabled}
+                        onColor="#86d3ff"
+                        onHandleColor="#2693e6"
+                        handleDiameter={25}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.2)"
+                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.1)"
+                        height={15}
+                        width={40}
+                        className="react-switch"
+                        id="toggle"
+                    />
+                </div>
+            </div>
             <div className="relative z-0 w-full mb-5 group">
                 <input
                     type="email"
@@ -180,42 +244,132 @@ export default function AddClient() {
                     </label>
                 </div>
 
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="text"
-                        name="propertyCode"
-                        id="floating_company"
-                        value={formData.propertyCode}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_company"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        Property Code
-                    </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="text"
-                        name="paymentPlan"
-                        id="floating_paymentPlan"
-                        value={formData.paymentPlan}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_paymentPlan"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        Payment Plan
-                    </label>
-                </div>
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <button
+                            type="button"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            onClick={() => {
+                                // Add your logic for the button click
+                                openModal()
+                            }}
+                        >
+                            <span className="peer-focus:font-medium duration-300 transform -translate-y-6 scale-75 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                {/* Replace the content inside the span with your desired label */}
+                                Property Code
+                            </span>
+                        </button>
+                        <button
+                            className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
+                            onClick={(e) => {
+                                // Prevent the click event from propagating to the button
+                                e.stopPropagation()
+
+                                // Add your logic for the filter button click
+                                openModal()
+                            }}
+                        >
+                            {/* Replace the content inside the button with your desired filter icon */}
+                            <FcFilledFilter fontSize={24} />
+                        </button>
+                        <Modal
+                            isOpen={isModalOpen}
+                            onRequestClose={closeModal}
+                            contentLabel="Filter Modal"
+                            className="custom-modal-styles"
+                            overlayClassName="custom-overlay-styles"
+                        >
+                            <h2 className="text-white">Filter Qualification</h2>
+                            <div className="mb-4">
+                                <label htmlFor="filterInput" className="text-white block mb-2">
+                                    Filter by Column1:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="filterInput"
+                                    value={filterCriteria}
+                                    onChange={(e) => setFilterCriteria(e.target.value)}
+                                    className="w-full p-2 border rounded-md"
+                                    placeholder="Enter filter criteria"
+                                />
+                            </div>
+                            <button
+                                onClick={() => {
+                                    // Apply your filtering logic using 'filterCriteria'
+                                    const filteredData = productData.filter((item) =>
+                                        item.Column1.includes(filterCriteria)
+                                    )
+                                    console.log(filteredData)
+
+                                    // Add additional logic as needed...
+
+                                    closeModal()
+                                }}
+                                className="text-white bg-gray-800 px-4 py-2 rounded-md"
+                            >
+                                Apply Filter
+                            </button>
+                            <button onClick={closeModal} className="text-white bg-gray-800 px-4 py-2 rounded-md mt-4">
+                                Close Modal
+                            </button>
+                        </Modal>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            disabled
+                            name="propertyCode"
+                            id="floating_company"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                        />
+                        <label
+                            htmlFor="floating_company"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Property Code
+                        </label>
+                    </div>
+                )}
+                {isUserTypeEnabled ? (
+                    <div className="mb-5">
+                        <label className="block text-sm text-gray-700">Payment Plan</label>
+                        <div className="mt-1">
+                            <Switch
+                                onChange={handleToggleChangePayment}
+                                checked={isUserPaymentPlan}
+                                onColor="#86d3ff"
+                                onHandleColor="#2693e6"
+                                handleDiameter={25}
+                                uncheckedIcon={false}
+                                checkedIcon={false}
+                                boxShadow="0px 1px 5px rgba(0, 0, 0, 0.2)"
+                                activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.1)"
+                                height={15}
+                                width={40}
+                                className="react-switch"
+                                id="toggle"
+                            />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="text"
+                            name="paymentPlan"
+                            id="floating_paymentPlan"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_paymentPlan"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Payment Plan
+                        </label>
+                    </div>
+                )}
                 <div className="relative z-0 w-full mb-5 group">
                     <input
                         type="text"
@@ -225,7 +379,7 @@ export default function AddClient() {
                         onChange={handleChange}
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                         placeholder=" "
-                        required
+                        disabled
                     />
                     <label
                         htmlFor="floating_userType"
@@ -234,78 +388,154 @@ export default function AddClient() {
                         User Type
                     </label>
                 </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="number"
-                        name="downPayment"
-                        id="floating_downPayment"
-                        value={formData.downPayment}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_downPayment"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        Down Payment
-                    </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="number"
-                        name="monthlyPayment"
-                        id="floating_monthlyPayment"
-                        value={formData.monthlyPayment}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_monthlyPayment"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        Monthly Payment
-                    </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="number"
-                        name="keyPayment"
-                        id="floating_keyPayment"
-                        value={formData.keyPayment}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_keyPayment"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        Key Payment
-                    </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="number"
-                        name="afterKeyPayment"
-                        id="floating_afterKeyPayment"
-                        value={formData.afterKeyPayment}
-                        onChange={handleChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                    />
-                    <label
-                        htmlFor="floating_afterKeyPayment"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        After KeyPayment
-                    </label>
-                </div>
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="downPayment"
+                            id="floating_downPayment"
+                            value={formData.downPayment}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_downPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Down Payment
+                        </label>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="downPayment"
+                            id="floating_downPayment"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_downPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Down Payment
+                        </label>
+                    </div>
+                )}
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="monthlyPayment"
+                            id="floating_monthlyPayment"
+                            value={formData.monthlyPayment}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_monthlyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Monthly Payment
+                        </label>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="monthlyPayment"
+                            id="floating_monthlyPayment"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_monthlyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Monthly Payment
+                        </label>
+                    </div>
+                )}
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="keyPayment"
+                            id="floating_keyPayment"
+                            value={formData.keyPayment}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_keyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Key Payment
+                        </label>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="keyPayment"
+                            id="floating_keyPayment"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_keyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Key Payment
+                        </label>
+                    </div>
+                )}
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="afterKeyPayment"
+                            id="floating_afterKeyPayment"
+                            value={formData.afterKeyPayment}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_afterKeyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            After KeyPayment
+                        </label>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="afterKeyPayment"
+                            id="floating_afterKeyPayment"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_afterKeyPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            After KeyPayment
+                        </label>
+                    </div>
+                )}
             </div>
 
             <button
