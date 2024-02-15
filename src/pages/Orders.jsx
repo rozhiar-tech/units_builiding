@@ -30,9 +30,12 @@ export default function AddClient() {
     const closeModal = () => {
         setIsModalOpen(false)
     }
-    const [filterCriteria, setFilterCriteria] = useState('')
+    const [filterCriteria, setFilterCriteria] = useState({})
+    const [filteredData, setFilteredData] = useState([])
     const [isUserTypeEnabled, setIsUserTypeEnabled] = useState(false)
     const [isUserPaymentPlan, setIsUserPaymentPlan] = useState(true)
+    const [propertyCode, setPropertyCode] = useState('')
+
     const handleToggleChange = (checked) => {
         setIsUserTypeEnabled(checked)
         setFormData((prevData) => ({
@@ -59,7 +62,7 @@ export default function AddClient() {
                     userType: formData.userType,
                     email: formData.email,
                     phone: formData.phone,
-                    propertyCode: formData.propertyCode,
+                    propertyCode: propertyCode,
                     paymentPlan: formData.paymentPlan,
                     downPayment: formData.downPayment,
                     monthlyPayment: formData.monthlyPayment,
@@ -82,6 +85,10 @@ export default function AddClient() {
             console.error('Error adding client to Firestore:', error.message)
             throw error
         }
+    }
+    const handlePropertyCodeSelection = (selectedCode) => {
+        setPropertyCode(selectedCode)
+        closeModal()
     }
 
     const handleChange = (e) => {
@@ -122,6 +129,19 @@ export default function AddClient() {
         } catch (error) {
             toast.error('Error adding client. Please try again.', { position: 'top-right', autoClose: 3000 })
         }
+    }
+    const applyFilters = () => {
+        const result = productData.filter((item) => {
+            // Check each column for filtering
+            for (const [key, value] of Object.entries(filterCriteria)) {
+                if (value && item[key] && !item[key].toString().includes(value)) {
+                    return false // If any condition doesn't match, exclude the item
+                }
+            }
+            return true // Include the item if all conditions are met
+        })
+
+        setFilteredData(result)
     }
 
     return (
@@ -278,41 +298,144 @@ export default function AddClient() {
                             contentLabel="Filter Modal"
                             className="custom-modal-styles"
                             overlayClassName="custom-overlay-styles"
+                            style={{
+                                content: {
+                                    maxHeight: '80%', // Adjust this value to your preference
+                                    margin: 'auto',
+                                    overflow: 'auto'
+                                }
+                            }}
+                            center
                         >
                             <h2 className="text-white">Filter Qualification</h2>
+
+                            {/* Add filters for each column */}
                             <div className="mb-4">
-                                <label htmlFor="filterInput" className="text-white block mb-2">
-                                    Filter by Column1:
+                                <label htmlFor="filterColumn1" className="text-white block mb-2">
+                                    Filter by وجهە:
                                 </label>
                                 <input
                                     type="text"
-                                    id="filterInput"
-                                    value={filterCriteria}
-                                    onChange={(e) => setFilterCriteria(e.target.value)}
-                                    className="w-full p-2 border rounded-md"
+                                    id="filterColumn1"
+                                    value={filterCriteria.Column1 || ''}
+                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, Column1: e.target.value })}
+                                    className="w-full p-2 border rounded-md text-black"
                                     placeholder="Enter filter criteria"
                                 />
                             </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="filterرقم_شقه" className="text-white block mb-2">
+                                    Filter by رقم_شقه:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="filterرقم_شقه"
+                                    value={filterCriteria['رقم_شقه'] || ''}
+                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, رقم_شقه: e.target.value })}
+                                    className="w-full p-2 border rounded-md text-black"
+                                    placeholder="Enter filter criteria"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="filterمتر" className="text-white block mb-2">
+                                    Filter by متر:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="filterمتر"
+                                    value={filterCriteria['متر'] || ''}
+                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, متر: e.target.value })}
+                                    className="w-full p-2 border rounded-md text-black"
+                                    placeholder="Enter filter criteria"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="filterسعر_متر" className="text-white block mb-2">
+                                    Filter by سعر_متر:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="filterسعر_متر"
+                                    value={filterCriteria['سعر_متر'] || ''}
+                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, سعر_متر: e.target.value })}
+                                    className="w-full p-2 border rounded-md text-black"
+                                    placeholder="Enter filter criteria"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="filterسعر_كلي" className="text-white block mb-2">
+                                    Filter by سعر_كلي:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="filterسعر_كلي"
+                                    value={filterCriteria['سعر_كلي'] || ''}
+                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, سعر_كلي: e.target.value })}
+                                    className="w-full p-2 border rounded-md text-black"
+                                    placeholder="Enter filter criteria"
+                                />
+                            </div>
+
                             <button
                                 onClick={() => {
-                                    // Apply your filtering logic using 'filterCriteria'
-                                    const filteredData = productData.filter((item) =>
-                                        item.Column1.includes(filterCriteria)
-                                    )
-                                    console.log(filteredData)
+                                    applyFilters()
 
                                     // Add additional logic as needed...
-
-                                    closeModal()
+                                    // closeModal()
                                 }}
                                 className="text-white bg-gray-800 px-4 py-2 rounded-md"
                             >
                                 Apply Filter
                             </button>
-                            <button onClick={closeModal} className="text-white bg-gray-800 px-4 py-2 rounded-md mt-4">
+                            <button
+                                onClick={closeModal}
+                                className="text-white bg-gray-800 px-4 py-2 rounded-md mt-4 mx-3"
+                            >
                                 Close Modal
                             </button>
+
+                            {/* Display filtered data */}
+                            {filteredData.length > 0 && (
+                                <div className="mt-4">
+                                    <h3 className="text-white">Filtered Results:</h3>
+                                    <table className="table-auto text-white w-full mt-2">
+                                        <thead className="bg-gray-900">
+                                            <tr>
+                                                {/* Display headers for each column */}
+                                                {Object.keys(filteredData[0]).map((header, index) => (
+                                                    <th key={index} className="border p-2">
+                                                        {header}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredData.map((item, rowIndex) => (
+                                                <tr key={rowIndex}>
+                                                    {/* Display data for each column */}
+                                                    {Object.entries(item).map(([key, value], colIndex) => (
+                                                        <td
+                                                            key={colIndex}
+                                                            className={`border p-2 ${
+                                                                key === 'رقم_شقه' ? 'cursor-pointer text-blue-500' : '' // Change cursor style and color for رقم_شقه column
+                                                            }`}
+                                                            onClick={() => handlePropertyCodeSelection(value)}
+                                                        >
+                                                            {value}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </Modal>
+                        ;
                     </div>
                 ) : (
                     <div className="relative z-0 w-full mb-5 group">

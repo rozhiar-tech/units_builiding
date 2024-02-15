@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import Orders from './pages/Orders'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Customers from './pages/Customers'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -29,6 +30,7 @@ function App() {
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<Products />} />
                     <Route path="orders" element={<Orders />} />
+                    <Route path="customers" element={<Customers />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

@@ -3,7 +3,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: black;
+    background-color: #36454f;
     color: white;
     padding: 20px;
     border-radius: 8px;
@@ -12,4 +12,52 @@
 
 .custom-overlay-styles {
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.close-button {
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+}
+
+.user-info {
+    text-align: center;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button {
+    background-color: #3490dc;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
 }
