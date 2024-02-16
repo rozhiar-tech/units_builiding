@@ -76,8 +76,7 @@ export default function AddClient() {
                     monthlyPayment: formData.monthlyPayment,
                     keyPayment: formData.keyPayment,
                     afterKeyPayment: formData.afterKeyPayment,
-                    overallPayment: formData.overallPayment,
-                    userId: userDocRef.id
+                    overallPayment: formData.overallPayment
                 })
             } else {
                 userDocRef = await addDoc(collection(firestore, 'Users'), {
