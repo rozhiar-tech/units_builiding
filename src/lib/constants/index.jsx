@@ -5,7 +5,8 @@ import {
     HiOutlineUsers,
     HiOutlineDocumentText,
     HiOutlineQuestionMarkCircle,
-    HiOutlineCog
+    HiOutlineCog,
+    HiChartPie
 } from 'react-icons/hi'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -38,6 +39,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         label: 'Transactions',
         path: '/transactions',
         icon: <HiOutlineDocumentText />
+    },
+    {
+        key: 'expences',
+        label: 'Expences',
+        path: '/expences',
+        icon: <HiChartPie />
     }
 ]
 

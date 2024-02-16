@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
-
 import Modal from 'react-modal'
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Typography,
+    TableSortLabel
+} from '@mui/material'
+import TextField from '@mui/material/TextField'
 
 Modal.setAppElement('#root') // Set the root element for accessibility
 
-export default function Customers() {
+const Customers = () => {
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' })
+    const [searchInput, setSearchInput] = useState('')
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -30,49 +44,159 @@ export default function Customers() {
         setIsModalOpen(false)
     }
 
+    const requestSort = (key) => {
+        let direction = 'ascending'
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending'
+        }
+        setSortConfig({ key, direction })
+    }
+
+    const getSortedData = () => {
+        let sortedData = [...users]
+
+        // Sorting
+        if (sortConfig.key) {
+            sortedData.sort((a, b) => {
+                const keyA = a[sortConfig.key]
+                const keyB = b[sortConfig.key]
+                if (keyA < keyB) return sortConfig.direction === 'ascending' ? -1 : 1
+                if (keyA > keyB) return sortConfig.direction === 'ascending' ? 1 : -1
+                return 0
+            })
+        }
+
+        // Searching
+        if (searchInput) {
+            const lowerCaseSearch = searchInput.toLowerCase()
+            sortedData = sortedData.filter(
+                (user) =>
+                    (user.firstName && user.firstName.toLowerCase().includes(lowerCaseSearch)) ||
+                    (user.lastName && user.lastName.toLowerCase().includes(lowerCaseSearch)) ||
+                    (user.email && user.email.toLowerCase().includes(lowerCaseSearch)) ||
+                    (user.phone && user.phone.toLowerCase().includes(lowerCaseSearch)) ||
+                    (user.propertyCode && user.propertyCode.toLowerCase().includes(lowerCaseSearch))
+            )
+        }
+
+        return sortedData
+    }
+
+    const sortedData = getSortedData()
+
     return (
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
-            <h1>Customer List</h1>
-            <table className="w-full text-sm text-left rtl:text-right text-gray-900 ">
-                <thead className='"text-xs text-gray-700 uppercase bg-gray-50  dark:text-gray-400"'>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Payment Plan</th>
-                        <th>Down Payment</th>
-                        <th>Property Code</th>
-                        <th>phone</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map((user) => (
-                        <tr
-                            key={user.id}
-                            onClick={() => openModal(user)}
-                            style={{ cursor: 'pointer' }}
-                            className='"odd:bg-white  even:bg-gray-200  border-b dark:border-gray-700 "'
-                        >
-                            <td>{user.firstName}</td>
-                            <td>{user.lastName}</td>
-                            <td>{user.email}</td>
-                            <td>{user.paymentPlan === 'true' ? 'Payment Plan' : 'Payed'}</td>
-                            <td>{user.downPayment}</td>
-                            <td>{user.propertyCode}</td>
-                            <td>{user.phone}</td>
-                            <td>
-                                <button
-                                    type="button"
-                                    className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <h1 className="my-3">Customer List</h1>
+            <TextField
+                type="text"
+                placeholder="Search..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                fullWidth
+                label="Search"
+                variant="outlined"
+                sx={{ mb: 2 }}
+            />
+
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'firstName'}
+                                    direction={sortConfig.key === 'firstName' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('firstName')}
                                 >
-                                    View Details
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                    First Name
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'lastName'}
+                                    direction={sortConfig.key === 'lastName' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('lastName')}
+                                >
+                                    Last Name
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'email'}
+                                    direction={sortConfig.key === 'email' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('email')}
+                                >
+                                    Email
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'paymentPlan'}
+                                    direction={sortConfig.key === 'paymentPlan' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('paymentPlan')}
+                                >
+                                    Payment Plan
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'downPayment'}
+                                    direction={sortConfig.key === 'downPayment' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('downPayment')}
+                                >
+                                    Down Payment
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'propertyCode'}
+                                    direction={sortConfig.key === 'propertyCode' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('propertyCode')}
+                                >
+                                    Property Code
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={sortConfig.key === 'phone'}
+                                    direction={sortConfig.key === 'phone' ? sortConfig.direction : 'asc'}
+                                    onClick={() => requestSort('phone')}
+                                >
+                                    Phone
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {sortedData.map((user) => (
+                            <TableRow
+                                key={user.id}
+                                onClick={() => openModal(user)}
+                                style={{ cursor: 'pointer' }}
+                                className="odd:bg-white even:bg-gray-200 border-b dark:border-gray-700"
+                            >
+                                <TableCell>{user.firstName}</TableCell>
+                                <TableCell>{user.lastName}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.paymentPlan === 'true' ? 'Payment Plan' : 'Paid'}</TableCell>
+                                <TableCell>{user.downPayment}</TableCell>
+                                <TableCell>{user.propertyCode}</TableCell>
+                                <TableCell>{user.phone}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => openModal(user)}
+                                        sx={{ backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}
+                                    >
+                                        View Details
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
             <Modal
                 isOpen={isModalOpen}
@@ -83,26 +207,25 @@ export default function Customers() {
                 {selectedUser && (
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h2 className="text-2xl font-bold">User Profile</h2>
-                            <button className="close-button" onClick={closeModal}>
-                                &times;
-                            </button>
+                            <Typography variant="h4" sx={{ flexGrow: 1 }}>
+                                User Profile
+                            </Typography>
+                            <Button color="secondary" onClick={closeModal}>
+                                Close
+                            </Button>
                         </div>
                         <div className="modal-body">
                             <div className="user-info">
                                 <img
                                     src={selectedUser.profileImage}
                                     alt="User Profile"
-                                    className="rounded-full h-20 w-20 object-cover"
+                                    style={{ borderRadius: '50%', height: '100px', width: '100px', objectFit: 'cover' }}
                                 />
-                                <p className="text-xl font-semibold mt-2">{`${selectedUser.firstName} ${selectedUser.lastName}`}</p>
-                                <p className="text-gray-600">{selectedUser.email}</p>
-                                {/* Add other user details */}
-                            </div>
-                            <div className="actions">
-                                <button className="button" onClick={closeModal}>
-                                    Close
-                                </button>
+                                <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+                                    {`${selectedUser.firstName} ${selectedUser.lastName}`}
+                                </Typography>
+                                <Typography color="textSecondary">{selectedUser.email}</Typography>
+                            
                             </div>
                         </div>
                     </div>
@@ -111,3 +234,5 @@ export default function Customers() {
         </div>
     )
 }
+
+export default Customers

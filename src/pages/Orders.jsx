@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { auth, createUserWithEmailAndPassword, firestore, collection, addDoc } from '../firebase/initFirebase' // Update the path
+import {
+    auth,
+    createUserWithEmailAndPassword,
+    firestore,
+    collection,
+    addDoc,
+    Timestamp
+} from '../firebase/initFirebase' // Update the path
 import { toast } from 'react-toastify'
 import Switch from 'react-switch'
 import { FcFilledFilter } from 'react-icons/fc'
@@ -19,7 +26,8 @@ export default function AddClient() {
         afterKeyPayment: '',
         email: '',
         password: '',
-        phone: ''
+        phone: '',
+        overallPayment: ''
     })
     const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -40,8 +48,7 @@ export default function AddClient() {
         setIsUserTypeEnabled(checked)
         setFormData((prevData) => ({
             ...prevData,
-            userType: checked ? 'client' : 'admin' // Set userType to 'client' when enabled, empty otherwise
-            // ... (other fields based on your requirements)
+            userType: checked ? 'client' : 'admin'
         }))
     }
     const handleToggleChangePayment = (checked) => {
@@ -54,9 +61,10 @@ export default function AddClient() {
     }
     const addClientToFirestore = async (formData) => {
         try {
-            let docRef
+            // Add user data to 'Users' collection
+            let userDocRef
             if (isUserTypeEnabled) {
-                docRef = await addDoc(collection(firestore, 'Users'), {
+                userDocRef = await addDoc(collection(firestore, 'Users'), {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
                     userType: formData.userType,
@@ -67,20 +75,37 @@ export default function AddClient() {
                     downPayment: formData.downPayment,
                     monthlyPayment: formData.monthlyPayment,
                     keyPayment: formData.keyPayment,
-                    afterKeyPayment: formData.afterKeyPayment
+                    afterKeyPayment: formData.afterKeyPayment,
+                    overallPayment: formData.overallPayment,
+                    userId: userDocRef.id
                 })
             } else {
-                docRef = await addDoc(collection(firestore, 'Users'), {
+                userDocRef = await addDoc(collection(firestore, 'Users'), {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
                     userType: formData.userType,
                     email: formData.email,
-                    phone: formData.phone
+                    phone: formData.phone,
+                    userId: userDocRef.id
                 })
             }
 
-            console.log('Document written with ID: ', docRef.id)
-            return docRef.id // Returning the document ID might be useful for further operations
+            // Add transaction data to 'Transactions' collection
+            const transactionDate = Timestamp.fromDate(new Date())
+            const remainingPayment = formData.overallPayment - formData.downPayment
+
+            await addDoc(collection(firestore, 'Transactions'), {
+                userId: userDocRef.id,
+                transactionDate: transactionDate,
+                downPayment: formData.downPayment,
+                overallPayment: formData.overallPayment,
+                remainingPayment: remainingPayment,
+                paymentPlan: formData.paymentPlan,
+                propertyCode: propertyCode
+            })
+
+            console.log('Document written with ID: ', userDocRef.id)
+            return userDocRef.id
         } catch (error) {
             console.error('Error adding client to Firestore:', error.message)
             throw error
@@ -545,6 +570,43 @@ export default function AddClient() {
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
                             Down Payment
+                        </label>
+                    </div>
+                )}
+                {isUserTypeEnabled ? (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="overallPayment"
+                            id="floating_overallPayment"
+                            value={formData.overallPayment}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_downPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Overall Payment
+                        </label>
+                    </div>
+                ) : (
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="overallPayment"
+                            id="floating_overallPayment"
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            disabled
+                        />
+                        <label
+                            htmlFor="floating_overallPayment"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Overall Payment
                         </label>
                     </div>
                 )}

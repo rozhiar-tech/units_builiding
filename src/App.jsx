@@ -11,6 +11,8 @@ import Orders from './pages/Orders'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Customers from './pages/Customers'
+import Transaction from './pages/Transactions'
+import Expences from './pages/Expences'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -31,6 +33,8 @@ function App() {
                     <Route path="products" element={<Products />} />
                     <Route path="orders" element={<Orders />} />
                     <Route path="customers" element={<Customers />} />
+                    <Route path="transactions" element={<Transaction />} />
+                    <Route path="expences" element={<Expences />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
