@@ -4,8 +4,7 @@ import {
     HiOutlineShoppingCart,
     HiOutlineUsers,
     HiOutlineDocumentText,
-    HiOutlineQuestionMarkCircle,
-    HiOutlineCog,
+
     HiChartPie
 } from 'react-icons/hi'
 
