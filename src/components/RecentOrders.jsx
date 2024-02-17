@@ -20,7 +20,7 @@ export default function RecentOrders() {
                         client_id: data.userId,
                         order_date: data.transactionDate.toDate(),
                         order_total: `$${data.downPayment}`,
-                        current_order_status: data.paymentPlan === 'true' ? 'Payment Plan' : 'Payed'
+                        current_order_status: data.paymentPlan === true ? 'Payment Plan' : 'Payed'
                     }
                 })
 

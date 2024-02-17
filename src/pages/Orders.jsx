@@ -5,7 +5,8 @@ import {
     firestore,
     collection,
     addDoc,
-    Timestamp
+    Timestamp,
+    updateDoc
 } from '../firebase/initFirebase' // Update the path
 import { toast } from 'react-toastify'
 import Switch from 'react-switch'
@@ -71,7 +72,7 @@ export default function AddClient() {
                     email: formData.email,
                     phone: formData.phone,
                     propertyCode: propertyCode,
-                    paymentPlan: formData.paymentPlan,
+                    paymentPlan: isUserPaymentPlan,
                     downPayment: formData.downPayment,
                     monthlyPayment: formData.monthlyPayment,
                     keyPayment: formData.keyPayment,
@@ -88,6 +89,11 @@ export default function AddClient() {
                     userId: userDocRef.id
                 })
             }
+            // Extract userId from the DocumentReference
+            const userId = userDocRef.id
+
+            // Update the document with the generated userId
+            await updateDoc(userDocRef, { userId: userId })
 
             // Add transaction data to 'Transactions' collection
             const transactionDate = Timestamp.fromDate(new Date())
@@ -99,7 +105,7 @@ export default function AddClient() {
                 downPayment: formData.downPayment,
                 overallPayment: formData.overallPayment,
                 remainingPayment: remainingPayment,
-                paymentPlan: formData.paymentPlan,
+                paymentPlan: isUserPaymentPlan,
                 propertyCode: propertyCode
             })
 
@@ -300,7 +306,7 @@ export default function AddClient() {
                         >
                             <span className="peer-focus:font-medium duration-300 transform -translate-y-6 scale-75 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                 {/* Replace the content inside the span with your desired label */}
-                                Property Code
+                                {propertyCode === '' ? 'Property Code' : propertyCode}
                             </span>
                         </button>
                         <button
@@ -535,7 +541,7 @@ export default function AddClient() {
                         User Type
                     </label>
                 </div>
-                {isUserTypeEnabled ? (
+                {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
                         <input
                             type="number"
@@ -572,7 +578,7 @@ export default function AddClient() {
                         </label>
                     </div>
                 )}
-                {isUserTypeEnabled ? (
+                {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
                         <input
                             type="number"
@@ -609,7 +615,7 @@ export default function AddClient() {
                         </label>
                     </div>
                 )}
-                {isUserTypeEnabled ? (
+                {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
                         <input
                             type="number"
@@ -646,7 +652,7 @@ export default function AddClient() {
                         </label>
                     </div>
                 )}
-                {isUserTypeEnabled ? (
+                {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
                         <input
                             type="number"
@@ -683,7 +689,7 @@ export default function AddClient() {
                         </label>
                     </div>
                 )}
-                {isUserTypeEnabled ? (
+                {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
                         <input
                             type="number"

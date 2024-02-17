@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import { Menu, Popover, Transition } from '@headlessui/react'
-import { HiOutlineBell, HiOutlineSearch, HiOutlineChatAlt } from 'react-icons/hi'
-import { useNavigate } from 'react-router-dom'
+import { HiOutlineBell, HiOutlineSearch } from 'react-icons/hi'
+// import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import backgroundImage from '../../assets/account.jpg'
 
 export default function Header() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     return (
         <div className="bg-white h-16 px-4 flex items-center border-b border-gray-200 justify-between">
@@ -19,7 +19,7 @@ export default function Header() {
                 />
             </div>
             <div className="flex items-center gap-2 mr-2">
-                <Popover className="relative">
+                {/* <Popover className="relative">
                     {({ open }) => (
                         <>
                             <Popover.Button
@@ -48,7 +48,7 @@ export default function Header() {
                             </Transition>
                         </>
                     )}
-                </Popover>
+                </Popover> */}
                 <Popover className="relative">
                     {({ open }) => (
                         <>
@@ -101,7 +101,7 @@ export default function Header() {
                         leaveTo="transform opacity-0 scale-95"
                     >
                         <Menu.Items className="origin-top-right z-10 absolute right-0 mt-2 w-48 rounded-sm shadow-md p-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            <Menu.Item>
+                            {/* <Menu.Item>
                                 {({ active }) => (
                                     <div
                                         onClick={() => navigate('/profile')}
@@ -113,8 +113,8 @@ export default function Header() {
                                         Your Profile
                                     </div>
                                 )}
-                            </Menu.Item>
-                            <Menu.Item>
+                            </Menu.Item> */}
+                            {/* <Menu.Item>
                                 {({ active }) => (
                                     <div
                                         onClick={() => navigate('/settings')}
@@ -138,7 +138,7 @@ export default function Header() {
                                         Sign out
                                     </div>
                                 )}
-                            </Menu.Item>
+                            </Menu.Item> */}
                         </Menu.Items>
                     </Transition>
                 </Menu>

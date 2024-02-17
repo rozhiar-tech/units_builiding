@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import Customers from './pages/Customers'
 import Transaction from './pages/Transactions'
 import Expences from './pages/Expences'
+import Services from './pages/Services'
+import Broadcast from './pages/Broadcast'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -35,6 +37,8 @@ function App() {
                     <Route path="customers" element={<Customers />} />
                     <Route path="transactions" element={<Transaction />} />
                     <Route path="expences" element={<Expences />} />
+                    <Route path="services" element={<Services />} />
+                    <Route path="broadcast" element={<Broadcast />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

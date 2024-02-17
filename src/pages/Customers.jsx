@@ -28,7 +28,10 @@ const Customers = () => {
         const fetchUsers = async () => {
             const usersCollection = collection(firestore, 'Users')
             const usersSnapshot = await getDocs(usersCollection)
-            const usersData = usersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+            const usersData = usersSnapshot.docs
+                .filter((doc) => doc.data().userType === 'client')
+                .map((doc) => ({ id: doc.id, ...doc.data() }))
+
             setUsers(usersData)
         }
 
@@ -225,7 +228,6 @@ const Customers = () => {
                                     {`${selectedUser.firstName} ${selectedUser.lastName}`}
                                 </Typography>
                                 <Typography color="textSecondary">{selectedUser.email}</Typography>
-                            
                             </div>
                         </div>
                     </div>
