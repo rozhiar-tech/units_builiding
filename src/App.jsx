@@ -40,6 +40,7 @@ function App() {
                     <Route path="expences" element={<Expences />} />
                     <Route path="services" element={<Services />} />
                     <Route path="broadcast" element={<Broadcast />} />
+                    <Route path="/client-dashboard" element={<ClientDashboard user={user} />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

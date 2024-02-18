@@ -57,6 +57,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         label: 'Broadcast',
         path: '/broadcast',
         icon: <HiChatAlt2 />
+    },
+    {
+        key: 'client-dashboard',
+        label: 'client-dashboard',
+        path: '/client-dashboard',
+        icon: <HiChatAlt2 />
     }
 ]
 
