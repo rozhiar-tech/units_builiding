@@ -1,13 +1,36 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import { HiOutlineBell, HiOutlineSearch } from 'react-icons/hi'
 // import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import backgroundImage from '../../assets/account.jpg'
 
+const LanguageMenu = ({ onSelectLanguage }) => {
+    const languages = [
+        { code: 'en', label: 'English' },
+        { code: 'ar', label: 'Arabic' },
+        { code: 'ku', label: 'Kurdish' }
+    ]
+
+    return (
+        <div className="flex items-center">
+            {languages.map((language) => (
+                <div
+                    key={language.code}
+                    onClick={() => onSelectLanguage(language.code)}
+                    className="cursor-pointer p-1 hover:bg-gray-200 rounded-md"
+                >
+                    {language.label}
+                </div>
+            ))}
+        </div>
+    )
+}
+
 export default function Header() {
     // const navigate = useNavigate()
-
+    const [selectedLanguage, setSelectedLanguage] = useState('en')
+    console.log(selectedLanguage)
     return (
         <div className="bg-white h-16 px-4 flex items-center border-b border-gray-200 justify-between">
             <div className="relative">
@@ -49,6 +72,20 @@ export default function Header() {
                         </>
                     )}
                 </Popover> */}
+                <Popover className="relative">
+                    {({ open }) => (
+                        <>
+                            <Popover.Button
+                                className={classNames(
+                                    open && 'bg-gray-100',
+                                    'group inline-flex items-center rounded-sm p-1.5 text-gray-700 hover:text-opacity-100 focus:outline-none active:bg-gray-100'
+                                )}
+                            >
+                                <LanguageMenu onSelectLanguage={setSelectedLanguage} />
+                            </Popover.Button>
+                        </>
+                    )}
+                </Popover>
                 <Popover className="relative">
                     {({ open }) => (
                         <>

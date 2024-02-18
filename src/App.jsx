@@ -15,6 +15,7 @@ import Transaction from './pages/Transactions'
 import Expences from './pages/Expences'
 import Services from './pages/Services'
 import Broadcast from './pages/Broadcast'
+import ClientDashboard from './pages/Client-dashboard'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -30,7 +31,7 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
+                <Route path="/" element={user ? <Layout user={user} /> : <Navigate to="/login" />}>
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<Products />} />
                     <Route path="orders" element={<Orders />} />
@@ -42,6 +43,7 @@ function App() {
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/client-dashboard" element={<ClientDashboard user={user} />} />
             </Routes>
             <ToastContainer position="top-center" autoClose={3000} showProgressBar={true} />
         </Router>
