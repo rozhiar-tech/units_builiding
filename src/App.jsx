@@ -71,7 +71,7 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        user || admin ? (
+                        user && admin ? (
                             <Layout user={user} />
                         ) : user && !admin ? (
                             <Navigate to="/client-dashboard" />
