@@ -1,18 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import { Stack, Step, Stepper, StepLabel, Typography, Paper, Box, LinearProgress } from '@mui/material'
-// import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai' // Import icons from react-icons
+import {
+    Stack,
+    Step,
+    Stepper,
+    StepLabel,
+    Typography,
+    Paper,
+    Box,
+    LinearProgress,
+    Badge,
+    IconButton,
+    Snackbar,
+    Divider
+} from '@mui/material'
 import { collection, getDocs } from '../firebase/initFirebase'
 import { format, addMonths, differenceInDays } from 'date-fns'
 import { firestore } from '../firebase/initFirebase'
 import { productData } from '../data/data'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 
 const steps = ['January', 'February', 'April', 'July', 'October', 'December']
 
 const ClientDashboard = ({ user }) => {
+    // Define state variables
     const [userData, setUserData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [services, setServices] = useState([])
     const [propertyDetails, setPropertyDetails] = useState(null)
+    const [constructionSteps, setConstructionSteps] = useState([])
+    const [currentStep, setCurrentStep] = useState(0)
+    const [notificationCount, setNotificationCount] = useState(0)
+    const [messages, setMessages] = useState([])
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+
+    // useEffect hook to fetch data
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -28,6 +49,7 @@ const ClientDashboard = ({ user }) => {
                             if (userData.userId === user.uid) {
                                 setUserData(userData)
                                 setLoading(false)
+                                fetchMessages(userData)
                                 console.log('user is', userData)
                             }
                         })
@@ -41,6 +63,49 @@ const ClientDashboard = ({ user }) => {
                 setLoading(false)
             }
         }
+
+        fetchUserData()
+    }, [user])
+    const fetchMessages = async (userData) => {
+        try {
+            if (userData) {
+                const messagesCollectionRef = collection(firestore, 'Messages')
+                const messagesSnapshot = await getDocs(messagesCollectionRef)
+
+                if (!messagesSnapshot.empty) {
+                    const messagesData = messagesSnapshot.docs.map((doc) => doc.data())
+
+                    // Filter messages based on user's propertyCode
+                    const userPropertyCode = userData ? userData.propertyCode : ''
+                    const filteredMessages = messagesData.filter((message) => {
+                        // Check if the user's propertyCode starts with 'A' and the message building is 'A'
+                        if (userPropertyCode.startsWith('A') && message.building === 'A') {
+                            return true
+                        }
+                        // Check if the user's propertyCode starts with 'B' and the message building is 'B'
+                        if (userPropertyCode.startsWith('B') && message.building === 'B') {
+                            return true
+                        }
+                        // Add additional conditions for other buildings if needed
+
+                        // If no specific condition matches, consider it a message for other users
+                        return false
+                    })
+
+                    setMessages(filteredMessages)
+
+                    // Count unread messages
+                    const unreadMessages = filteredMessages.filter((message) => !message.read)
+                    setNotificationCount(unreadMessages.length)
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error)
+        }
+    }
+    useEffect(() => {
+
+        // Define async function to fetch services data
         const fetchServices = async () => {
             try {
                 const servicesCollectionRef = collection(firestore, 'Services')
@@ -59,6 +124,8 @@ const ClientDashboard = ({ user }) => {
                 setLoading(false)
             }
         }
+
+        // Define function to fetch property details
         const fetchPropertyDetails = () => {
             if (userData && userData.propertyCode) {
                 const matchedProperty = productData.find((property) => property.رقم_شقه === userData.propertyCode)
@@ -69,39 +136,63 @@ const ClientDashboard = ({ user }) => {
             }
         }
 
-        fetchUserData()
+        // Define async function to fetch construction steps
+        const fetchConstructionSteps = async () => {
+            try {
+                if (userData && userData.propertyCode) {
+                    const propertyCodePrefix = userData.propertyCode.charAt(0).toUpperCase()
+                    const constructionStepsCollectionRef = collection(firestore, propertyCodePrefix)
+                    const constructionStepsSnapshot = await getDocs(constructionStepsCollectionRef)
+
+                    if (!constructionStepsSnapshot.empty) {
+                        const stepsData = constructionStepsSnapshot.docs.map((doc) => doc.data())
+                        // Sort the steps based on the date
+                        const sortedStepsData = stepsData.sort((a, b) => new Date(a.date) - new Date(b.date))
+                        setConstructionSteps(sortedStepsData)
+
+                        // Find the first step with a date greater than the current date
+                        const nextStepIndex = sortedStepsData.findIndex((step) => new Date(step.date) > new Date())
+                        setCurrentStep(nextStepIndex >= 0 ? nextStepIndex : 0)
+                    } else {
+                        console.error(`No construction steps found for property code ${userData.propertyCode}`)
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching construction steps:', error)
+            }
+        }
+
         fetchServices()
         fetchPropertyDetails()
-    }, [user, userData])
-    const currentDate = new Date()
+        fetchConstructionSteps()
+        // fetchMessages()
+        return () => {
+        }
+    }, [userData])
 
+    const handleOpenSnackbar = () => {
+        setOpenSnackbar(true)
+
+        // Mark all messages as read when the Snackbar is opened
+        const updatedMessages = messages.map((message) => ({ ...message, read: true }))
+        setMessages(updatedMessages)
+        setNotificationCount(0)
+    }
+
+    // Handle closing Snackbar
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false)
+    }
+    // Define function to get progress
     const getProgress = (startDate, endDate) => {
         const start = new Date(startDate)
         const end = new Date(endDate)
-        const progress = ((currentDate - start) / (end - start)) * 100
+        const progress = ((new Date() - start) / (end - start)) * 100
 
         return progress < 0 ? 0 : progress > 100 ? 100 : progress
     }
-    const constructionSteps = [
-        { label: 'Construction Begins', date: 'February 2024' },
-        { label: 'Foundation Completed', date: 'June 2024' },
-        { label: 'Frame Construction', date: 'September 2024' },
-        { label: 'Interior Work', date: 'January 2025' },
-        { label: 'Keys Given to Tenants', date: 'April 2025' }
-        // Add more steps as needed
-    ]
-    const getCurrentStep = () => {
-        const currentDate = new Date()
-        const currentMonth = currentDate.getMonth() + 1 // Adding 1 to match the month index
 
-        return currentMonth
-    }
-
-    // const getStepIcon = (index) => {
-    //     const currentStep = getCurrentStep()
-    //     return index < currentStep ? <AiOutlineCheckCircle /> : <AiOutlineCloseCircle />
-    // }
-
+    // Define function to get the next payment date
     const getNextPaymentDate = () => {
         const currentDate = new Date()
         const currentDay = currentDate.getDate()
@@ -112,9 +203,17 @@ const ClientDashboard = ({ user }) => {
         return new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth(), 5)
     }
 
+    // Define function to get the days until next payment
     const getDaysUntilNextPayment = () => {
         const currentDate = new Date()
         const nextPaymentDate = getNextPaymentDate()
+
+        // Extract the day of the month from userData.dateOfPaymentMonthly
+        const paymentDay = new Date(userData.dateOfPaymentMonthly.toDate()).getDate()
+
+        // Set the next payment date to the specified day of the month
+        nextPaymentDate.setDate(paymentDay)
+
         const daysRemaining = differenceInDays(nextPaymentDate, currentDate)
         return daysRemaining
     }
@@ -124,6 +223,13 @@ const ClientDashboard = ({ user }) => {
             elevation={3}
             sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
         >
+            <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <IconButton color="primary" onClick={handleOpenSnackbar}>
+                    <Badge badgeContent={notificationCount} color="error">
+                        <NotificationsIcon />
+                    </Badge>
+                </IconButton>
+            </Box>
             <Typography variant="h4" mb={4}>
                 Client Dashboard - {userData ? userData.displayName : 'Guest'}
             </Typography>
@@ -133,9 +239,9 @@ const ClientDashboard = ({ user }) => {
             ) : (
                 <Stack sx={{ width: '100%' }} spacing={4}>
                     <Typography variant="h5" mb={2}>
-                        Current Step: {steps[getCurrentStep() - 1]}
+                        Current Step: {steps[currentStep]}
                     </Typography>
-                    <Stepper alternativeLabel activeStep={0} sx={{ width: '100%', mb: 4 }}>
+                    <Stepper alternativeLabel activeStep={currentStep} sx={{ width: '100%', mb: 4 }}>
                         {constructionSteps.map((step, index) => (
                             <Step key={index}>
                                 <StepLabel>
@@ -149,15 +255,15 @@ const ClientDashboard = ({ user }) => {
                         <div key={index} style={{ marginBottom: '20px' }}>
                             <Typography variant="body2">{step.label}</Typography>
                             <Typography variant="caption">{step.date}</Typography>
-                            <LinearProgress variant="determinate" value={getProgress('March 2024', step.date)} />
+                            {/* Check if the date has passed, then show progress */}
+                            {new Date(step.date) < new Date() && (
+                                <LinearProgress
+                                    variant="determinate"
+                                    value={getProgress(constructionSteps[0].date, step.date)}
+                                />
+                            )}
                         </div>
                     ))}
-
-                    {/* {steps.map((content, index) => (
-                        <div key={index}>
-                            {getCurrentStep() - 1 === index && <Typography variant="h6">{content}</Typography>}
-                        </div>
-                    ))} */}
 
                     {userData && (
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
@@ -295,6 +401,30 @@ const ClientDashboard = ({ user }) => {
                     )}
                 </Stack>
             )}
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                style={{ marginRight: '26px' }}
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+            >
+                <Paper elevation={3} sx={{ p: 2, borderRadius: 4 }}>
+                    <Typography variant="h6" gutterBottom>
+                        New Messages
+                    </Typography>
+                    {messages.map((message, index) => (
+                        <div key={index}>
+                            <Typography variant="body1" gutterBottom>
+                                {message.header}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                                {message.body}
+                            </Typography>
+                            {index < messages.length - 1 && <Divider sx={{ my: 1 }} />}
+                        </div>
+                    ))}
+                </Paper>
+            </Snackbar>
         </Paper>
     )
 }

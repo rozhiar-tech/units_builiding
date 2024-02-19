@@ -6,7 +6,8 @@ import {
     HiOutlineDocumentText,
     HiLibrary,
     HiChartPie,
-    HiChatAlt2
+    HiChatAlt2,
+    HiClock
 } from 'react-icons/hi'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -59,10 +60,10 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         icon: <HiChatAlt2 />
     },
     {
-        key: 'client-dashboard',
-        label: 'client-dashboard',
-        path: '/client-dashboard',
-        icon: <HiChatAlt2 />
+        key: 'timeline',
+        label: 'Timeline',
+        path: '/timeline',
+        icon: <HiClock />
     }
 ]
 

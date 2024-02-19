@@ -1,11 +1,24 @@
 import React, { useState } from 'react'
-import { Button, Container, Typography, Paper, Grid, TextField, CssBaseline } from '@mui/material'
+import {
+    Button,
+    Container,
+    Typography,
+    Paper,
+    Grid,
+    TextField,
+    CssBaseline,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl
+} from '@mui/material'
 import { collection, addDoc, Timestamp, firestore } from '../firebase/initFirebase'
 import { toast } from 'react-toastify'
 
 export default function Broadcast() {
     const [messageHeader, setMessageHeader] = useState('')
     const [messageBody, setMessageBody] = useState('')
+    const [building, setBuilding] = useState('A') // Default to 'A', you can change it as needed
 
     const handleAddMessage = async () => {
         try {
@@ -13,13 +26,15 @@ export default function Broadcast() {
             await addDoc(collection(firestore, 'Messages'), {
                 header: messageHeader,
                 body: messageBody,
-                timestamp: Timestamp.now()
+                timestamp: Timestamp.now(),
+                building: building
             })
 
             // Reset form
             setMessageHeader('')
             setMessageBody('')
-            toast.success(' Message added secussfully!', { position: 'top-right', autoClose: 3000 })
+            setBuilding('A') // Reset building to default
+            toast.success(' Message added successfully!', { position: 'top-right', autoClose: 3000 })
         } catch (error) {
             console.error('Error adding message:', error.message)
             toast.error('Error adding Message. Please try again.', {
@@ -55,6 +70,20 @@ export default function Broadcast() {
                                 value={messageBody}
                                 onChange={(e) => setMessageBody(e.target.value)}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="building-label">Building</InputLabel>
+                                <Select
+                                    labelId="building-label"
+                                    id="building"
+                                    value={building}
+                                    onChange={(e) => setBuilding(e.target.value)}
+                                >
+                                    <MenuItem value="A">Building A</MenuItem>
+                                    <MenuItem value="B">Building B</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                     </Grid>
                     <Button variant="contained" color="primary" onClick={handleAddMessage}>

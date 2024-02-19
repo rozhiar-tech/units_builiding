@@ -5,7 +5,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Products from './pages/Products'
 import { useEffect, useState } from 'react'
-import { auth, onAuthStateChanged } from './firebase/initFirebase' // Update the path
+import { auth, onAuthStateChanged, collection, getDocs, where, query, firestore } from './firebase/initFirebase' // Update the path
 import Login from './pages/Login'
 import Orders from './pages/Orders'
 import { ToastContainer } from 'react-toastify'
@@ -16,22 +16,70 @@ import Expences from './pages/Expences'
 import Services from './pages/Services'
 import Broadcast from './pages/Broadcast'
 import ClientDashboard from './pages/Client-dashboard'
+import Timeline from './pages/Timeline'
 
 function App() {
     const [user, setUser] = useState(null)
+    const [admin, setAdmin] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user)
+        const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+            setUser(authUser)
+
+            if (authUser) {
+                try {
+                    const usersCollectionRef = collection(firestore, 'Users')
+                    const q = query(usersCollectionRef, where('userId', '==', authUser.uid))
+                    const querySnapshot = await getDocs(q)
+
+                    if (!querySnapshot.empty) {
+                        const userData = querySnapshot.docs[0].data()
+                        const userType = userData.userType
+                        console.log('User type:', userType)
+
+                        // Redirect based on user type
+                        if (userType === 'admin') {
+                            console.log('Admin user')
+                            setAdmin(true)
+                        } else if (userType === 'client') {
+                            console.log('Client user')
+                            setAdmin(false)
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error)
+                } finally {
+                    setLoading(false) // Set loading to false once user data is fetched
+                }
+            } else {
+                setLoading(false) // Set loading to false if no authenticated user
+            }
         })
 
         return () => unsubscribe()
-    }, [])
+    }, []) // Ensure to include navigate in the dependency array if using it inside the useEffect
+
+    if (loading) {
+        // You can render a loading spinner or any other loading indicator here
+        return <p>Loading...</p>
+    }
 
     return (
         <Router>
             <Routes>
-                <Route path="/" element={user ? <Layout user={user} /> : <Navigate to="/login" />}>
+                <Route
+                    path="/"
+                    element={
+                        user || admin ? (
+                            <Layout user={user} />
+                        ) : user && !admin ? (
+                            <Navigate to="/client-dashboard" />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                >
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<Products />} />
                     <Route path="orders" element={<Orders />} />
@@ -40,7 +88,7 @@ function App() {
                     <Route path="expences" element={<Expences />} />
                     <Route path="services" element={<Services />} />
                     <Route path="broadcast" element={<Broadcast />} />
-                    <Route path="/client-dashboard" element={<ClientDashboard user={user} />} />
+                    <Route path="timeline" element={<Timeline />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

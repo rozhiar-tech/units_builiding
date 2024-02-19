@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     auth,
     createUserWithEmailAndPassword,
@@ -6,7 +6,11 @@ import {
     collection,
     addDoc,
     Timestamp,
-    updateDoc
+    updateDoc,
+    signOut,
+    signInWithEmailAndPassword,
+    getDocs,
+    serverTimestamp
 } from '../firebase/initFirebase' // Update the path
 import { toast } from 'react-toastify'
 import Switch from 'react-switch'
@@ -14,7 +18,11 @@ import { FcFilledFilter } from 'react-icons/fc'
 import Modal from 'react-modal'
 import './custom.css'
 import { productData } from '../data/data'
+import { TextField, InputAdornment, IconButton } from '@mui/material'
 
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import { DatePicker } from '@mui/x-date-pickers'
+import { useAuth } from '../lib/AuthContext'
 export default function AddClient() {
     const [formData, setFormData] = useState({
         firstName: '',
@@ -44,6 +52,27 @@ export default function AddClient() {
     const [isUserTypeEnabled, setIsUserTypeEnabled] = useState(false)
     const [isUserPaymentPlan, setIsUserPaymentPlan] = useState(true)
     const [propertyCode, setPropertyCode] = useState('')
+    const [selectedDate, handleDateChange] = useState(null)
+    const { emaill, passwordd } = useAuth()
+    const [selectedApartments, setSelectedApartments] = useState([])
+    useEffect(() => {
+        const fetchSelectedApartments = async () => {
+            try {
+                const selectedApartmentsCollectionRef = collection(firestore, 'SelectedApartments')
+                const selectedApartmentsSnapshot = await getDocs(selectedApartmentsCollectionRef)
+
+                if (!selectedApartmentsSnapshot.empty) {
+                    const selectedApartmentsData = selectedApartmentsSnapshot.docs.map((doc) => doc.data())
+                    // Update selected apartments state with the loaded data
+                    setSelectedApartments(selectedApartmentsData.map((apartment) => apartment.propertyCode))
+                }
+            } catch (error) {
+                console.error('Error fetching selected apartments:', error)
+            }
+        }
+
+        fetchSelectedApartments()
+    }, []) // Adjust dependencies as needed
 
     const handleToggleChange = (checked) => {
         setIsUserTypeEnabled(checked)
@@ -60,7 +89,7 @@ export default function AddClient() {
             // ... (other fields based on your requirements)
         }))
     }
-    const addClientToFirestore = async (formData) => {
+    const addClientToFirestore = async (formData, userId) => {
         try {
             // Add user data to 'Users' collection
             let userDocRef
@@ -77,7 +106,9 @@ export default function AddClient() {
                     monthlyPayment: formData.monthlyPayment,
                     keyPayment: formData.keyPayment,
                     afterKeyPayment: formData.afterKeyPayment,
-                    overallPayment: formData.overallPayment
+                    overallPayment: formData.overallPayment,
+                    dateOfPaymentMonthly: selectedDate,
+                    userId: userId
                 })
             } else {
                 userDocRef = await addDoc(collection(firestore, 'Users'), {
@@ -86,11 +117,10 @@ export default function AddClient() {
                     userType: formData.userType,
                     email: formData.email,
                     phone: formData.phone,
-                    userId: userDocRef.id
+                    userId: userId
                 })
             }
             // Extract userId from the DocumentReference
-            const userId = userDocRef.id
 
             // Update the document with the generated userId
             await updateDoc(userDocRef, { userId: userId })
@@ -116,9 +146,21 @@ export default function AddClient() {
             throw error
         }
     }
-    const handlePropertyCodeSelection = (selectedCode) => {
-        setPropertyCode(selectedCode)
-        closeModal()
+    const handlePropertyCodeSelection = async (propertyCode) => {
+        if (!selectedApartments.includes(propertyCode)) {
+            setSelectedApartments((prevSelected) => [...prevSelected, propertyCode])
+
+            // Add the selected apartment to Firestore
+            const selectedApartmentsRef = collection(firestore, 'SelectedApartments')
+            await addDoc(selectedApartmentsRef, {
+                propertyCode,
+                timestamp: serverTimestamp()
+            })
+
+            // Close the modal and get the property code
+            setPropertyCode(propertyCode)
+            closeModal()
+        }
     }
 
     const handleChange = (e) => {
@@ -134,10 +176,11 @@ export default function AddClient() {
 
         try {
             // Create user in Firebase Authentication
-            await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            const userId = userCredential.user.uid
 
             const { password, ...clientData } = formData // Exclude email and password
-            await addClientToFirestore(clientData)
+            await addClientToFirestore(clientData, userId)
 
             // Clear form data after submission
             setFormData({
@@ -156,6 +199,8 @@ export default function AddClient() {
             })
 
             toast.success('Client added successfully!', { position: 'top-right', autoClose: 3000 })
+            signOut(auth)
+            signInWithEmailAndPassword(auth, emaill, passwordd)
         } catch (error) {
             toast.error('Error adding client. Please try again.', { position: 'top-right', autoClose: 3000 })
         }
@@ -168,6 +213,12 @@ export default function AddClient() {
                     return false // If any condition doesn't match, exclude the item
                 }
             }
+
+            // Check if the apartment has been selected before
+            if (selectedApartments.includes(item['رقم_شقه'])) {
+                return false // Exclude the item if it has been selected before
+            }
+
             return true // Include the item if all conditions are met
         })
 
@@ -465,7 +516,6 @@ export default function AddClient() {
                                 </div>
                             )}
                         </Modal>
-                        ;
                     </div>
                 ) : (
                     <div className="relative z-0 w-full mb-5 group">
@@ -725,6 +775,37 @@ export default function AddClient() {
                             After KeyPayment
                         </label>
                     </div>
+                )}
+                {isUserTypeEnabled && isUserPaymentPlan ? (
+                    <DatePicker
+                        value={selectedDate}
+                        onChange={(date) => handleDateChange(date)}
+                        label="Date of Payment each month"
+                        format="yyyy-MM-dd HH:mm"
+                        inputFormat="yyyy-MM-dd HH:mm"
+                        renderInput={(props) => (
+                            <TextField
+                                {...props}
+                                className="w-full text-sm"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton>
+                                                <CalendarTodayIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        )}
+                    />
+                ) : (
+                    <TextField
+                        className="w-full text-sm"
+                        label="Date of Payment each month"
+                        value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                        disabled
+                    />
                 )}
             </div>
 
