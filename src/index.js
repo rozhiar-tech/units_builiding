@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import { LocalizationProvider } from '@mui/x-date-pickers'
+import './lib/languages/i18n'
 
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { AuthProvider } from './lib/AuthContext'

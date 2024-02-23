@@ -130,6 +130,7 @@ export default function AddClient() {
             const remainingPayment = formData.overallPayment - formData.downPayment
 
             await addDoc(collection(firestore, 'Transactions'), {
+                userName: formData.firstName + ' ' + formData.lastName,
                 userId: userDocRef.id,
                 transactionDate: transactionDate,
                 downPayment: formData.downPayment,

@@ -13,14 +13,21 @@ import {
     Snackbar,
     Divider
 } from '@mui/material'
-import { collection, getDocs } from '../firebase/initFirebase'
+import classNames from 'classnames'
+
+import { collection, getDocs, signOut, auth } from '../firebase/initFirebase'
 import { format, addMonths, differenceInDays } from 'date-fns'
 import { firestore } from '../firebase/initFirebase'
 import { productData } from '../data/data'
 import NotificationsIcon from '@mui/icons-material/Notifications'
+import { HiOutlineLogout } from 'react-icons/hi'
 
 const steps = ['January', 'February', 'April', 'July', 'October', 'December']
-
+const linkClass =
+    'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
+const darkThemeBackground = '#070F2B'
+const darkThemeText = '#FFFFFF'
+const darkThemeSecondaryText = '#535C91'
 const ClientDashboard = ({ user }) => {
     // Define state variables
     const [userData, setUserData] = useState(null)
@@ -104,7 +111,6 @@ const ClientDashboard = ({ user }) => {
         }
     }
     useEffect(() => {
-
         // Define async function to fetch services data
         const fetchServices = async () => {
             try {
@@ -166,8 +172,7 @@ const ClientDashboard = ({ user }) => {
         fetchPropertyDetails()
         fetchConstructionSteps()
         // fetchMessages()
-        return () => {
-        }
+        return () => {}
     }, [userData])
 
     const handleOpenSnackbar = () => {
@@ -204,34 +209,85 @@ const ClientDashboard = ({ user }) => {
     }
 
     // Define function to get the days until next payment
+    // Define function to get the days until next payment
     const getDaysUntilNextPayment = () => {
         const currentDate = new Date()
-        const nextPaymentDate = getNextPaymentDate()
 
         // Extract the day of the month from userData.dateOfPaymentMonthly
-        const paymentDay = new Date(userData.dateOfPaymentMonthly.toDate()).getDate()
+        const paymentDay = userData.dateOfPaymentMonthly
 
         // Set the next payment date to the specified day of the month
-        nextPaymentDate.setDate(paymentDay)
+        const nextPaymentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), paymentDay)
 
+        // If today is the payment day or later in the month, set the next payment to the next month
+        if (currentDate.getDate() >= paymentDay) {
+            nextPaymentDate.setMonth(currentDate.getMonth() + 1)
+        }
+
+        // Calculate the difference in days between the next payment date and the current date
         const daysRemaining = differenceInDays(nextPaymentDate, currentDate)
+
         return daysRemaining
     }
+
+    // Perform logout action here, using the Firebase authentication library or your preferred method
+    // For Firebase, you can use auth.signOut()
+
+    // For example:
+    // auth.signOut().then(() => {
+    //     console.log("User signed out");
+    //     // You may want to redirect the user to the login page after logout
+    //     // navigate('/login');
+    // }).catch((error) => {
+    //     console.error("Error signing out:", error);
+    // });
+
+    // After logout, you might want to redirect the user to the login page
+    // For example, if you're using react-router-dom:
+    // navigate('/login');
 
     return (
         <Paper
             elevation={3}
-            sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+            sx={{
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: darkThemeBackground, // Set dark theme background color
+                color: darkThemeText // Set dark theme text color
+            }}
         >
-            <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+            <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: '16px' }}>
                 <IconButton color="primary" onClick={handleOpenSnackbar}>
                     <Badge badgeContent={notificationCount} color="error">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
+
+                <div className={classNames(linkClass, 'cursor-pointer text-red-500')}>
+                    <button
+                        className="text-xl"
+                        onClick={() => {
+                            signOut(auth)
+                                .then(() => {
+                                    // Sign-out successful.
+                                    console.log('Sign-out successful.')
+                                })
+                                .catch((error) => {
+                                    // An error happened.
+                                    console.log('// An error happened.', error.message)
+                                })
+                        }}
+                    >
+                        <HiOutlineLogout />
+                    </button>
+                    Logout
+                </div>
             </Box>
             <Typography variant="h4" mb={4}>
-                Client Dashboard - {userData ? userData.displayName : 'Guest'}
+                Client Dashboard - {userData ? userData.firstName : 'Guest'}
             </Typography>
 
             {loading ? (
@@ -245,8 +301,12 @@ const ClientDashboard = ({ user }) => {
                         {constructionSteps.map((step, index) => (
                             <Step key={index}>
                                 <StepLabel>
-                                    <Typography variant="body2">{step.label}</Typography>
-                                    <Typography variant="caption">{step.date}</Typography>
+                                    <Typography color={'white'} variant="body2">
+                                        {step.label}
+                                    </Typography>
+                                    <Typography color={'white'} variant="caption">
+                                        {step.date}
+                                    </Typography>
                                 </StepLabel>
                             </Step>
                         ))}
@@ -267,7 +327,14 @@ const ClientDashboard = ({ user }) => {
 
                     {userData && (
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
-                            <Box bgcolor="#f2f2f2" p={3} borderRadius={8}>
+                            <Box
+                                sx={{
+                                    bgcolor: '#1B1A55', // Dark theme background color
+                                    color: '#FFFFFF', // Dark theme text color
+                                    p: 3,
+                                    borderRadius: 8
+                                }}
+                            >
                                 <Typography variant="h5" mb={2}>
                                     Down Payment
                                 </Typography>
@@ -276,7 +343,14 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#e0f7fa" p={3} borderRadius={8}>
+                            <Box
+                                sx={{
+                                    bgcolor: '#535C91', // Dark theme background color
+                                    color: '#FFFFFF', // Dark theme text color
+                                    p: 3,
+                                    borderRadius: 8
+                                }}
+                            >
                                 <Typography variant="h5" mb={2}>
                                     Monthly Payment
                                 </Typography>
@@ -285,16 +359,30 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#b2dfdb" p={3} borderRadius={8}>
+                            <Box
+                                sx={{
+                                    bgcolor: '#9290C3', // Dark theme background color
+                                    color: '#FFFFFF', // Dark theme text color
+                                    p: 3,
+                                    borderRadius: 8
+                                }}
+                            >
                                 <Typography variant="h5" mb={2}>
                                     Next Payment Date
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
-                                    {format(getNextPaymentDate(), 'MMMM d, yyyy')}
+                                    {userData.dateOfPaymentMonthly} of every Month
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#ffcc80" p={3} borderRadius={8}>
+                            <Box
+                                sx={{
+                                    bgcolor: '#070F2B', // Dark theme background color
+                                    color: '#FFFFFF', // Dark theme text color
+                                    p: 3,
+                                    borderRadius: 8
+                                }}
+                            >
                                 <Typography variant="h5" mb={2}>
                                     Days until Next Payment
                                 </Typography>
@@ -304,6 +392,7 @@ const ClientDashboard = ({ user }) => {
                             </Box>
                         </Stack>
                     )}
+
                     <Typography variant="h4" mb={4}>
                         Services Section
                     </Typography>
@@ -315,10 +404,12 @@ const ClientDashboard = ({ user }) => {
                             {services.map((service, index) => (
                                 <Box
                                     key={index}
-                                    bgcolor="#e0e0e0"
+                                    bgcolor="#1B1A55"
                                     p={3}
                                     borderRadius={8}
                                     width={{ xs: '100%', sm: '30%' }}
+                                    boxShadow={3}
+                                    color="#FFFFFF"
                                 >
                                     <Typography variant="h5" mb={2}>
                                         {service.serviceName}
@@ -336,13 +427,14 @@ const ClientDashboard = ({ user }) => {
                             ))}
                         </Stack>
                     )}
+
                     <Typography variant="h4" mb={4}>
                         Property Section
                     </Typography>
 
                     {propertyDetails ? (
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
-                            <Box bgcolor="#f2f2f2" p={3} borderRadius={8}>
+                            <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Property View
                                 </Typography>
@@ -351,7 +443,7 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#e0f7fa" p={3} borderRadius={8}>
+                            <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Floor
                                 </Typography>
@@ -360,7 +452,7 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#b2dfdb" p={3} borderRadius={8}>
+                            <Box bgcolor="#535C91" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Apartment Number
                                 </Typography>
@@ -369,7 +461,7 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#ffcc80" p={3} borderRadius={8}>
+                            <Box bgcolor="#9290C3" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Area (متر)
                                 </Typography>
@@ -378,7 +470,7 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#f2f2f2" p={3} borderRadius={8}>
+                            <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Price per Square Meter
                                 </Typography>
@@ -387,7 +479,7 @@ const ClientDashboard = ({ user }) => {
                                 </Typography>
                             </Box>
 
-                            <Box bgcolor="#e0f7fa" p={3} borderRadius={8}>
+                            <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
                                     Total Price
                                 </Typography>

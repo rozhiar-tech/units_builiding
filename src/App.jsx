@@ -1,5 +1,5 @@
 // App.js
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route,  } from 'react-router-dom'
 import Layout from './components/shared/Layout'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -74,9 +74,9 @@ function App() {
                         user && admin ? (
                             <Layout user={user} />
                         ) : user && !admin ? (
-                            <Navigate to="/client-dashboard" />
+                            <ClientDashboard user={user} />
                         ) : (
-                            <Navigate to="/login" />
+                            <Login />
                         )
                     }
                 >
@@ -92,7 +92,10 @@ function App() {
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/client-dashboard" element={<ClientDashboard user={user} />} />
+                <Route
+                    path="/client-dashboard"
+                    element={user && !admin ? <ClientDashboard user={user} /> : <Login />}
+                />
             </Routes>
             <ToastContainer position="top-center" autoClose={3000} showProgressBar={true} />
         </Router>

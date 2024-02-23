@@ -7,7 +7,6 @@ export default function Login() {
     const [error, setError] = useState(null)
     const navigate = useNavigate()
     const { emaill, passwordd, setEmaill, setPasswordd } = useAuth()
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {

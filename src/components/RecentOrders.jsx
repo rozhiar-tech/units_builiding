@@ -20,26 +20,12 @@ export default function RecentOrders() {
                         client_id: data.userId,
                         order_date: data.transactionDate.toDate(),
                         order_total: `$${data.downPayment}`,
-                        current_order_status: data.paymentPlan === true ? 'Payment Plan' : 'Payed'
+                        current_order_status: data.paymentPlan === true ? 'Payment Plan' : 'Payed',
+                        client_name: data.userName
                     }
                 })
 
-                const usersCollection = collection(firestore, 'Users')
-                const usersSnapshot = await getDocs(usersCollection)
-                const usersData = usersSnapshot.docs.reduce((acc, doc) => {
-                    const data = doc.data()
-                    acc[data.userId] = {
-                        client_name: `${data.firstName} ${data.lastName}`
-                    }
-                    return acc
-                }, {})
-
-                const mergedData = transactionsData.map((transaction) => ({
-                    ...transaction,
-                    client_name: usersData[transaction.client_id]?.client_name || 'Unknown User'
-                }))
-
-                setRecentOrderData(mergedData)
+                setRecentOrderData(transactionsData)
             } catch (error) {
                 console.error('Error fetching data for RecentOrders:', error.message)
             }

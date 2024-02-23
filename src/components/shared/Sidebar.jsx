@@ -5,16 +5,19 @@ import { FcDepartment } from 'react-icons/fc'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { DASHBOARD_SIDEBAR_LINKS, DASHBOARD_SIDEBAR_BOTTOM_LINKS } from '../../lib/constants'
 import { auth, signOut } from '../../firebase/initFirebase'
+import { useTranslation, Trans } from 'react-i18next'
 
 const linkClass =
     'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
 
 export default function Sidebar() {
+    const { t } = useTranslation()
+
     return (
         <div className="bg-neutral-900 w-60 p-3 flex flex-col">
             <div className="flex items-center gap-2 px-1 py-3">
                 <FcDepartment fontSize={24} />
-                <span className="text-neutral-200 text-lg">Dania City</span>
+                <span className="text-neutral-200 text-lg"> {t('description.part2')}</span>
             </div>
             <div className="py-8 flex flex-1 flex-col gap-0.5">
                 {DASHBOARD_SIDEBAR_LINKS.map((link) => (
