@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
 import { format } from 'date-fns'
+import { useTranslation } from 'react-i18next'
 
 export default function TransactionChart() {
     const [chartData, setChartData] = useState([])
+    const { t } = useTranslation()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,7 +57,7 @@ export default function TransactionChart() {
 
     return (
         <div className="h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
-            <strong className="text-gray-700 font-medium">Transactions</strong>
+            <strong className="text-gray-700 font-medium">{t('transaction.transactions')}</strong>
             <div className="mt-3 w-full flex-1 text-xs">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart

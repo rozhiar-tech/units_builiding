@@ -4,6 +4,7 @@ import { HiOutlineBell, HiOutlineSearch } from 'react-icons/hi'
 // import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import backgroundImage from '../../assets/account.jpg'
+import i18n from '../../lib/languages/i18n'
 
 const LanguageMenu = ({ onSelectLanguage }) => {
     const languages = [
@@ -17,7 +18,10 @@ const LanguageMenu = ({ onSelectLanguage }) => {
             {languages.map((language) => (
                 <div
                     key={language.code}
-                    onClick={() => onSelectLanguage(language.code)}
+                    onClick={() => {
+                        onSelectLanguage(language.code)
+                        i18n.changeLanguage(language.code)
+                    }}
                     className="cursor-pointer p-1 hover:bg-gray-200 rounded-md"
                 >
                     {language.label}

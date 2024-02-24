@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
+import { useTranslation } from 'react-i18next'
 
 const RADIAN = Math.PI / 180
 const COLORS = ['#00C49F', '#FFBB28', '#FF8042']
@@ -19,7 +20,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 const BuyerProfilePieChart = () => {
     const [chartData, setChartData] = useState([])
-
+    const { t } = useTranslation()
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -48,7 +49,7 @@ const BuyerProfilePieChart = () => {
 
     return (
         <div className="w-[20rem] h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col">
-            <strong className="text-gray-700 font-medium">Property Code</strong>
+            <strong className="text-gray-700 font-medium">{t('transaction.pcode')}</strong>
             <div className="mt-3 w-full flex-1 text-xs">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart width={400} height={300}>

@@ -13,55 +13,55 @@ import {
 export const DASHBOARD_SIDEBAR_LINKS = [
     {
         key: 'dashboard',
-        label: 'Dashboard',
+        labelKey: 'sidebar.dashboard',
         path: '/',
         icon: <HiOutlineViewGrid />
     },
     {
         key: 'products',
-        label: 'Products',
+        labelKey: 'sidebar.products',
         path: '/products',
         icon: <HiOutlineCube />
     },
     {
         key: 'orders',
-        label: 'Orders',
+        labelKey: 'sidebar.orders',
         path: '/orders',
         icon: <HiOutlineShoppingCart />
     },
     {
         key: 'customers',
-        label: 'Customers',
+        labelKey: 'sidebar.customers',
         path: '/customers',
         icon: <HiOutlineUsers />
     },
     {
         key: 'transactions',
-        label: 'Transactions',
+        labelKey: 'sidebar.transactions',
         path: '/transactions',
         icon: <HiOutlineDocumentText />
     },
     {
         key: 'expences',
-        label: 'Expences',
+        labelKey: 'sidebar.expences',
         path: '/expences',
         icon: <HiChartPie />
     },
     {
         key: 'services',
-        label: 'Services',
+        labelKey: 'sidebar.services',
         path: '/services',
         icon: <HiLibrary />
     },
     {
         key: 'broadcast',
-        label: 'Broadcast',
+        labelKey: 'sidebar.broadcast',
         path: '/broadcast',
         icon: <HiChatAlt2 />
     },
     {
         key: 'timeline',
-        label: 'Timeline',
+        labelKey: 'sidebar.timeline',
         path: '/timeline',
         icon: <HiClock />
     }

@@ -3,9 +3,11 @@ import { format } from 'date-fns'
 import { Link } from 'react-router-dom'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
 import { getOrderStatus } from '../lib/helpers'
+import { useTranslation } from 'react-i18next'
 
 export default function RecentOrders() {
     const [recentOrderData, setRecentOrderData] = useState([])
+    const { t } = useTranslation()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,17 +38,17 @@ export default function RecentOrders() {
 
     return (
         <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-            <strong className="text-gray-700 font-medium">Recent Orders</strong>
+            <strong className="text-gray-700 font-medium">{t('RecentOrders.title')}</strong>
             <div className="border-x border-gray-200 rounded-sm mt-3">
                 <table className="w-full text-gray-700">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Unit ID</th>
-                            <th>Client Name</th>
-                            <th>Order Date</th>
-                            <th>Order Total</th>
-                            <th>Order Status</th>
+                            <th>{t('RecentOrders.id')}</th>
+                            <th>{t('RecentOrders.uid')}</th>
+                            <th>{t('RecentOrders.cname')}</th>
+                            <th>{t('RecentOrders.odate')}</th>
+                            <th>{t('RecentOrders.ototal')}</th>
+                            <th>{t('RecentOrders.ostatus')}</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -5,7 +5,7 @@ import { FcDepartment } from 'react-icons/fc'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { DASHBOARD_SIDEBAR_LINKS, DASHBOARD_SIDEBAR_BOTTOM_LINKS } from '../../lib/constants'
 import { auth, signOut } from '../../firebase/initFirebase'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const linkClass =
     'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
@@ -46,7 +46,7 @@ export default function Sidebar() {
                     >
                         <HiOutlineLogout />
                     </button>
-                    Logout
+                    {t('log.logOut')}
                 </div>
             </div>
         </div>
@@ -55,6 +55,7 @@ export default function Sidebar() {
 
 function SidebarLink({ link }) {
     const { pathname } = useLocation()
+    const { t } = useTranslation()
 
     return (
         <Link
@@ -62,7 +63,7 @@ function SidebarLink({ link }) {
             className={classNames(pathname === link.path ? 'bg-neutral-700 text-white' : 'text-neutral-400', linkClass)}
         >
             <span className="text-xl">{link.icon}</span>
-            {link.label}
+            {t(link.labelKey)} {/* Translate the label using the t function */}
         </Link>
     )
 }

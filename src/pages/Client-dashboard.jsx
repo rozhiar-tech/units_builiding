@@ -16,7 +16,7 @@ import {
 import classNames from 'classnames'
 
 import { collection, getDocs, signOut, auth } from '../firebase/initFirebase'
-import { format, addMonths, differenceInDays } from 'date-fns'
+import { differenceInDays } from 'date-fns'
 import { firestore } from '../firebase/initFirebase'
 import { productData } from '../data/data'
 import NotificationsIcon from '@mui/icons-material/Notifications'
@@ -27,7 +27,6 @@ const linkClass =
     'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
 const darkThemeBackground = '#070F2B'
 const darkThemeText = '#FFFFFF'
-const darkThemeSecondaryText = '#535C91'
 const ClientDashboard = ({ user }) => {
     // Define state variables
     const [userData, setUserData] = useState(null)
@@ -198,15 +197,15 @@ const ClientDashboard = ({ user }) => {
     }
 
     // Define function to get the next payment date
-    const getNextPaymentDate = () => {
-        const currentDate = new Date()
-        const currentDay = currentDate.getDate()
+    // const getNextPaymentDate = () => {
+    //     const currentDate = new Date()
+    //     const currentDay = currentDate.getDate()
 
-        // If today is the 5th or later, set the next payment for the 5th of the next month
-        const nextPaymentDate = currentDay >= 5 ? addMonths(currentDate, 1) : currentDate
+    //     // If today is the 5th or later, set the next payment for the 5th of the next month
+    //     const nextPaymentDate = currentDay >= 5 ? addMonths(currentDate, 1) : currentDate
 
-        return new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth(), 5)
-    }
+    //     return new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth(), 5)
+    // }
 
     // Define function to get the days until next payment
     // Define function to get the days until next payment

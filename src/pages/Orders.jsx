@@ -18,11 +18,11 @@ import { FcFilledFilter } from 'react-icons/fc'
 import Modal from 'react-modal'
 import './custom.css'
 import { productData } from '../data/data'
-import { TextField, InputAdornment, IconButton } from '@mui/material'
+import { TextField } from '@mui/material'
 
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import { DatePicker } from '@mui/x-date-pickers'
-import { useAuth } from '../lib/AuthContext'
+
+import { useSelector } from 'react-redux'
+
 export default function AddClient() {
     const [formData, setFormData] = useState({
         firstName: '',
@@ -52,9 +52,10 @@ export default function AddClient() {
     const [isUserTypeEnabled, setIsUserTypeEnabled] = useState(false)
     const [isUserPaymentPlan, setIsUserPaymentPlan] = useState(true)
     const [propertyCode, setPropertyCode] = useState('')
-    const [selectedDate, handleDateChange] = useState(null)
-    const { emaill, passwordd } = useAuth()
+    const [selectedDate, handleDateChange] = useState(0)
     const [selectedApartments, setSelectedApartments] = useState([])
+    const { email, password } = useSelector((state) => state.auth)
+
     useEffect(() => {
         const fetchSelectedApartments = async () => {
             try {
@@ -180,7 +181,7 @@ export default function AddClient() {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
             const userId = userCredential.user.uid
 
-            const { password, ...clientData } = formData // Exclude email and password
+            const { ...clientData } = formData // Exclude email and password
             await addClientToFirestore(clientData, userId)
 
             // Clear form data after submission
@@ -201,7 +202,7 @@ export default function AddClient() {
 
             toast.success('Client added successfully!', { position: 'top-right', autoClose: 3000 })
             signOut(auth)
-            signInWithEmailAndPassword(auth, emaill, passwordd)
+            signInWithEmailAndPassword(auth, email, password)
         } catch (error) {
             toast.error('Error adding client. Please try again.', { position: 'top-right', autoClose: 3000 })
         }
@@ -778,28 +779,24 @@ export default function AddClient() {
                     </div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
-                    <DatePicker
-                        value={selectedDate}
-                        onChange={(date) => handleDateChange(date)}
-                        label="Date of Payment each month"
-                        format="yyyy-MM-dd HH:mm"
-                        inputFormat="yyyy-MM-dd HH:mm"
-                        renderInput={(props) => (
-                            <TextField
-                                {...props}
-                                className="w-full text-sm"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton>
-                                                <CalendarTodayIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
-                        )}
-                    />
+                    <div className="relative z-0 w-full mb-5 group">
+                        <input
+                            type="number"
+                            name="dateofmonth"
+                            id="floating_dateofmonth"
+                            value={selectedDate}
+                            onChange={(e) => handleDateChange(e.target.value)}
+                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            required
+                        />
+                        <label
+                            htmlFor="floating_dateofmonth"
+                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Date of the month to pay
+                        </label>
+                    </div>
                 ) : (
                     <TextField
                         className="w-full text-sm"

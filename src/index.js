@@ -4,16 +4,17 @@ import './index.css'
 import App from './App'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import './lib/languages/i18n'
+import { Provider } from 'react-redux'
+import store from './lib/helpers/store'
 
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
-import { AuthProvider } from './lib/AuthContext'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
     <React.StrictMode>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <AuthProvider>
+        <Provider store={store}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <App />
-            </AuthProvider>
-        </LocalizationProvider>
+            </LocalizationProvider>
+        </Provider>
     </React.StrictMode>
 )

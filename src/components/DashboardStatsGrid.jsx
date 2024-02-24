@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { IoBagHandle, IoPieChart, IoPeople, IoCart } from 'react-icons/io5'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
+import { useTranslation } from 'react-i18next'
 
 export default function DashboardStatsGrid() {
     const [totalSales, setTotalSales] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
     const [totalCustomers, setTotalCustomers] = useState(0)
     const [totalOrders, setTotalOrders] = useState(0)
+    const { t } = useTranslation()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,7 +45,7 @@ export default function DashboardStatsGrid() {
                     <IoBagHandle className="text-2xl text-white" />
                 </div>
                 <div className="pl-4">
-                    <span className="text-sm text-gray-500 font-light">Total Sales</span>
+                    <span className="text-sm text-gray-500 font-light">{t('sales.tsales')}</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">${totalSales}</strong>
                     </div>
@@ -54,7 +56,7 @@ export default function DashboardStatsGrid() {
                     <IoPieChart className="text-2xl text-white" />
                 </div>
                 <div className="pl-4">
-                    <span className="text-sm text-gray-500 font-light">Total Expenses</span>
+                    <span className="text-sm text-gray-500 font-light">{t('sales.texpences')}</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">${totalExpenses}</strong>
                     </div>
@@ -65,7 +67,7 @@ export default function DashboardStatsGrid() {
                     <IoPeople className="text-2xl text-white" />
                 </div>
                 <div className="pl-4">
-                    <span className="text-sm text-gray-500 font-light">Total Customers</span>
+                    <span className="text-sm text-gray-500 font-light">{t('sales.tcustomers')}</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">{totalCustomers}</strong>
                     </div>
@@ -76,7 +78,7 @@ export default function DashboardStatsGrid() {
                     <IoCart className="text-2xl text-white" />
                 </div>
                 <div className="pl-4">
-                    <span className="text-sm text-gray-500 font-light">Total Orders</span>
+                    <span className="text-sm text-gray-500 font-light">{t('sales.torders')}</span>
                     <div className="flex items-center">
                         <strong className="text-xl text-gray-700 font-semibold">{totalOrders}</strong>
                     </div>

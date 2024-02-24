@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, onAuthStateChanged } from '.././firebase/initFirebase' // Update the path
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useAuth } from '../lib/AuthContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { setEmail, setPassword } from '../lib/helpers/authSlice'
 export default function Login() {
     const [error, setError] = useState(null)
     const navigate = useNavigate()
-    const { emaill, passwordd, setEmaill, setPasswordd } = useAuth()
+    const dispatch = useDispatch()
+    const { email, password } = useSelector((state) => state.auth)
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -23,8 +25,9 @@ export default function Login() {
         e.preventDefault()
 
         try {
-            await signInWithEmailAndPassword(auth, emaill, passwordd)
-            // The onAuthStateChanged hook will handle redirection if needed
+            await signInWithEmailAndPassword(auth, email, password)
+            dispatch(setEmail(email))
+            dispatch(setPassword(password))
         } catch (error) {
             setError(error.message)
         }
@@ -49,8 +52,8 @@ export default function Login() {
                                         type="email"
                                         name="email"
                                         id="email"
-                                        value={emaill}
-                                        onChange={(e) => setEmaill(e.target.value)}
+                                        value={email}
+                                        onChange={(e) => dispatch(setEmail(e.target.value))}
                                         className=" border   sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                                         placeholder="name@company.com"
                                         required=""
@@ -64,7 +67,7 @@ export default function Login() {
                                         type="password"
                                         name="password"
                                         id="password"
-                                        onChange={(e) => setPasswordd(e.target.value)}
+                                        onChange={(e) => dispatch(setPassword(e.target.value))}
                                         placeholder="••••••••"
                                         className=" border  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                                         required=""
