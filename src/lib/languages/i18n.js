@@ -118,7 +118,8 @@ i18n
                     timeline: {
                         add: 'Add a Timeline',
                         building: 'Building',
-                        date: 'Milestone Date'
+                        date: 'Milestone Date',
+                        description: 'Milestone Description'
                     },
                     offers: {
                         add: 'Add New Offer',
@@ -230,7 +231,8 @@ i18n
                     timeline: {
                         add: 'أضف جدولًا زمنيًا',
                         building: 'مبنى',
-                        date: 'تاريخ الحدث'
+                        date: 'تاريخ الحدث',
+                        description: 'وصف الحدث'
                     },
                     offers: {
                         name: 'اسم العرض',
@@ -342,7 +344,8 @@ i18n
                     timeline: {
                         add: 'زیاد کردنی مەودا',
                         building: 'بینا',
-                        date: 'بەرواری مەودا'
+                        date: 'بەرواری مەودا',
+                        description: 'وەسفی مەودا'
                     },
                     offers: {
                         name: 'ناوی ئۆفەر',

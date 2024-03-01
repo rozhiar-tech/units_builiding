@@ -21,7 +21,7 @@ const Timeline = () => {
 
     const [building, setBuilding] = useState('')
     const [milestones, setMilestones] = useState([])
-    const [newMilestone, setNewMilestone] = useState({ label: '', date: '' })
+    const [newMilestone, setNewMilestone] = useState({ label: '', date: '', description: '' })
 
     const handleBuildingChange = (event) => {
         setBuilding(event.target.value)
@@ -29,14 +29,15 @@ const Timeline = () => {
     }
 
     const handleAddMilestone = async () => {
-        if (newMilestone.label && newMilestone.date) {
+        if (newMilestone.label && newMilestone.date && newMilestone.description) {
             setMilestones([...milestones, newMilestone])
-            setNewMilestone({ label: '', date: '' })
+            setNewMilestone({ label: '', date: '', description: '' })
 
             try {
                 const docRef = await addDoc(collection(firestore, building), {
                     label: newMilestone.label,
                     date: newMilestone.date,
+                    description: newMilestone.description,
                     timestamp: serverTimestamp()
                 })
                 console.log('Milestone added with ID: ', docRef.id)
@@ -91,6 +92,12 @@ const Timeline = () => {
                     variant="outlined"
                     value={newMilestone.label}
                     onChange={(e) => setNewMilestone({ ...newMilestone, label: e.target.value })}
+                />
+                <TextField
+                    label={t('timeline.description')}
+                    variant="outlined"
+                    value={newMilestone.description}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, description: e.target.value })}
                 />
                 <TextField
                     label="Milestone Date"
