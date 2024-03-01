@@ -12,10 +12,13 @@ import {
     LinearProgress
 } from '@mui/material'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 import { firestore, collection, addDoc, serverTimestamp, getDocs, deleteDoc } from '../firebase/initFirebase'
 
 const Timeline = () => {
+    const { t } = useTranslation()
+
     const [building, setBuilding] = useState('')
     const [milestones, setMilestones] = useState([])
     const [newMilestone, setNewMilestone] = useState({ label: '', date: '' })
@@ -71,11 +74,11 @@ const Timeline = () => {
     return (
         <Paper elevation={3} sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h4" mb={4}>
-                Add Timeline
+                {t('timeline.add')}
             </Typography>
 
             <FormControl sx={{ minWidth: 120, marginBottom: 3 }}>
-                <InputLabel id="building-label">Building</InputLabel>
+                <InputLabel id="building-label">{t('timeline.building')}</InputLabel>
                 <Select labelId="building-label" value={building} onChange={handleBuildingChange} label="Building">
                     <MenuItem value="A">Building A</MenuItem>
                     <MenuItem value="B">Building B</MenuItem>
@@ -84,7 +87,7 @@ const Timeline = () => {
 
             <Stack spacing={2} mb={3}>
                 <TextField
-                    label="Milestone Label"
+                    label={t('timeline.date')}
                     variant="outlined"
                     value={newMilestone.label}
                     onChange={(e) => setNewMilestone({ ...newMilestone, label: e.target.value })}
@@ -98,7 +101,7 @@ const Timeline = () => {
                     onChange={(e) => setNewMilestone({ ...newMilestone, date: e.target.value })}
                 />
                 <Button variant="contained" onClick={handleAddMilestone}>
-                    Add Milestone
+                    {t('timeline.add')}
                 </Button>
             </Stack>
 

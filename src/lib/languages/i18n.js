@@ -50,13 +50,82 @@ i18n
                         expences: 'Expences',
                         services: 'Services',
                         broadcast: 'Broadcast',
-                        timeline: 'Timeline'
+                        timeline: 'Timeline',
+                        offers: 'Offers'
                     },
                     log: {
                         logOut: 'Logout'
                     },
-                    orders:{
-                        
+                    orders: {
+                        admin: 'Admin',
+                        client: 'Client',
+                        email: 'Email Adrress',
+                        password: 'Password',
+                        phone: 'Phone Number',
+                        fname: 'First Name',
+                        lname: 'Last Name',
+                        pcode: 'Property Code',
+                        pplan: 'Payment Plan',
+                        dpayment: 'Down Payment',
+                        ovpayment: 'Overall Payment',
+                        mpayment: 'Monthly Payment',
+                        kpayment: 'Key Payment',
+                        afkey: 'After Key Payment',
+                        dopay: 'Date of the to pay',
+                        utype: 'User Type',
+                        propertycode: ' Filter by property code',
+                        filtername: 'Filter Qualification'
+                    },
+                    customers: {
+                        fname: 'First Name',
+                        lname: 'Last Name',
+                        email: 'Email',
+                        pplan: 'Payment Plan',
+                        dpayment: 'Down Payment',
+                        pcode: 'Property Code',
+                        phone: 'Phone Number',
+                        action: 'Actions'
+                    },
+                    transactions: {
+                        userId: 'User ID',
+                        transactiondate: 'Transaction Date',
+                        dpayment: 'Down Payment',
+                        ovpayment: 'Overall Payment',
+                        rpayment: 'Remaining Payment',
+                        pcode: 'Property Code',
+                        pmeter: 'Most Property Sold Based on the Area',
+                        pplan: 'Payment Plan'
+                    },
+                    expences: {
+                        description: 'Description',
+                        amount: 'Amount',
+                        add: 'Add Expense ',
+                        list: 'Expense  List',
+                        date: 'Date'
+                    },
+                    services: {
+                        add: 'Add Service',
+                        description: 'Service Description',
+                        name: 'Service Name',
+                        date: 'Availability Date'
+                    },
+                    messages: {
+                        add: 'Add a Messages',
+                        header: 'Message Header',
+                        body: 'Message Body',
+                        building: 'Building'
+                    },
+                    timeline: {
+                        add: 'Add a Timeline',
+                        building: 'Building',
+                        date: 'Milestone Date'
+                    },
+                    offers: {
+                        add: 'Add New Offer',
+                        name: 'Offer Name',
+                        description: 'Offer Description',
+                        start: 'Start Date',
+                        end: 'End Date'
                     }
                 }
             },
@@ -93,10 +162,82 @@ i18n
                         expences: 'النفقات',
                         services: 'خدمات',
                         broadcast: 'إذاعة',
-                        timeline: 'الجدول الزمني'
+                        timeline: 'الجدول الزمني',
+                        offers: 'عروض'
                     },
                     log: {
                         logOut: 'خروج'
+                    },
+                    orders: {
+                        admin: 'مسؤل',
+                        client: 'عميل',
+                        email: 'عنوان البريد الإلكتروني',
+                        password: 'كلمة المرور',
+                        phone: 'رقم التليفون',
+                        fname: 'الاسم الأول',
+                        lname: 'اسم العائلة',
+                        pcode: 'رمز الملكية',
+                        pplan: 'خطة الدفع',
+                        dpayment: 'دفعة مبدئية',
+                        ovpayment: 'الدفع الشامل',
+                        mpayment: 'الدفع الشهري',
+                        kpayment: 'عندما تلقى المفتاح الدفع',
+                        afkey: 'بعد استلام المفتاح الدفع',
+                        dopay: 'تاريخ السداد',
+                        utype: 'نوع المستخدم',
+                        propertycode: ' تصفية حسب رمز الملكية',
+                        filtername: 'تصفية المؤهلات'
+                    },
+                    customers: {
+                        fname: 'الاسم الأول',
+                        lname: 'اسم العائلة',
+                        email: 'عنوان البريد الإلكتروني',
+                        pplan: 'خطة الدفع',
+                        dpayment: 'دفعة مبدئية',
+                        pcode: 'رمز الملكية',
+                        phone: 'رقم التليفون',
+                        action: 'أجراءات'
+                    },
+                    transactions: {
+                        userId: 'معرف المستخدم',
+                        transactiondate: 'تاريخ الصفقة',
+                        dpayment: 'دفعة مبدئية',
+                        ovpayment: 'الدفع الشامل',
+                        rpayment: 'الدفع المتبقي',
+                        pcode: 'رمز الملكية',
+                        pplan: 'خطة الدفع',
+                        pmeter: 'تم بيع معظم العقارات بناءً على المنطقة'
+                    },
+                    expences: {
+                        description: 'وصف',
+                        amount: 'كمية',
+                        add: 'أضف النفقات',
+                        list: 'قائمة النفقات',
+                        date: 'تاريخ'
+                    },
+                    services: {
+                        add: 'أضف الخدمة',
+                        description: 'وصف الخدمة',
+                        name: 'اسم الخدمة',
+                        date: 'تاريخ التوفر'
+                    },
+                    messages: {
+                        add: 'إضافة رسائل',
+                        header: 'رأس الرسالة',
+                        body: 'محتوى الرسالة',
+                        building: 'مبنى'
+                    },
+                    timeline: {
+                        add: 'أضف جدولًا زمنيًا',
+                        building: 'مبنى',
+                        date: 'تاريخ الحدث'
+                    },
+                    offers: {
+                        name: 'اسم العرض',
+                        description: 'وصف العرض',
+                        start: 'تاريخ البدء',
+                        end: 'تاريخ الانتهاء',
+                        add: 'إضافة عرض جديد'
                     }
                 }
             },
@@ -133,10 +274,82 @@ i18n
                         expences: 'خەرجیەکان',
                         services: 'کارەکان',
                         broadcast: 'بڵاوکردنەوە',
-                        timeline: 'کات'
+                        timeline: 'کات',
+                        offers: 'ئۆفەرکان'
                     },
                     log: {
                         logOut: 'چوونە دەرەوە'
+                    },
+                    orders: {
+                        admin: 'ئادمین',
+                        client: 'کڕیار',
+                        email: 'ناونیشانی پۆستی ئەلیکترۆنی',
+                        password: 'تێپەڕ وشە',
+                        phone: 'ژمارەی تەلەفون',
+                        fname: 'ناوی یەکەم',
+                        lname: 'ناوی کۆتا',
+                        pcode: 'کۆدی زەوی',
+                        pplan: 'شێوازی پارەیان',
+                        dpayment: 'پارەی سەرەتا',
+                        ovpayment: 'کۆی پارە',
+                        mpayment: 'پارەی مانگانە',
+                        kpayment: 'پارەی کاتی کلیل',
+                        afkey: 'پارەی مانگانەی دوای کلیل',
+                        dopay: 'ڕۆژی پارەیانی مانگانە',
+                        utype: 'جۆری بەکارهێنەر',
+                        propertycode: 'فلتەر کردن بە کۆدی شوقە',
+                        filtername: 'شێوازی فلتەرکردن'
+                    },
+                    customers: {
+                        fname: 'ناوی یەکەم',
+                        lname: 'ناوی کۆتا',
+                        email: 'ناونیشانی پۆستی ئەلیکترۆنی',
+                        pplan: 'شێوازی پارەیان',
+                        dpayment: 'پارەی سەرەتا',
+                        pcode: 'کۆدی زەوی',
+                        phone: 'ژمارەی تەلەفون',
+                        action: 'کردار'
+                    },
+                    transactions: {
+                        userId: 'ناسەرەوە',
+                        transactiondate: 'بەرواری کرین',
+                        dpayment: 'پارەی سەرەتا',
+                        ovpayment: 'کۆی پارە',
+                        rpayment: 'پارەی ماوە',
+                        pcode: 'کۆدی زەوی',
+                        pplan: 'شێوازی پارەیان',
+                        pmeter: 'زۆر ترین فرۆشی مۆڵک لەسەر بنەمای ڕووبەر'
+                    },
+                    expences: {
+                        description: 'ناوڕۆک',
+                        amount: 'بڕ',
+                        add: 'زیاد کردنی خەرجی',
+                        list: 'لیستی خەرجیەکان',
+                        date: 'بەروار'
+                    },
+                    services: {
+                        add: 'زیاد کردنی خزمەتگوزاری',
+                        description: 'وردەکاری خزمەتگوزاری',
+                        name: 'ناوی خزمەتگوزاری',
+                        date: 'بەروار'
+                    },
+                    messages: {
+                        add: 'ناردنی نامە',
+                        header: 'بابەتی نامە',
+                        body: 'ناوڕۆکی نامە',
+                        building: 'بینا'
+                    },
+                    timeline: {
+                        add: 'زیاد کردنی مەودا',
+                        building: 'بینا',
+                        date: 'بەرواری مەودا'
+                    },
+                    offers: {
+                        name: 'ناوی ئۆفەر',
+                        description: 'وەسفی ئۆفەر',
+                        start: 'بەرواری دەست پێکردن',
+                        end: 'بەرواری کۆتایهاتن',
+                        add: 'زیاد کردنی ئۆفەر'
                     }
                 }
             }

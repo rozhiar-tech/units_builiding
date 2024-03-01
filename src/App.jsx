@@ -1,5 +1,5 @@
 // App.js
-import { BrowserRouter as Router, Routes, Route,  } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/shared/Layout'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -17,6 +17,8 @@ import Services from './pages/Services'
 import Broadcast from './pages/Broadcast'
 import ClientDashboard from './pages/Client-dashboard'
 import Timeline from './pages/Timeline'
+import { Audio } from 'react-loader-spinner'
+import Offers from './pages/Offers'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -62,7 +64,11 @@ function App() {
 
     if (loading) {
         // You can render a loading spinner or any other loading indicator here
-        return <p>Loading...</p>
+        return (
+            <div className="bg-black h-screen w-screen flex justify-center items-center">
+                <Audio height="80" width="80" radius="9" color="green" ariaLabel="loading" wrapperStyle wrapperClass />{' '}
+            </div>
+        )
     }
 
     return (
@@ -89,6 +95,7 @@ function App() {
                     <Route path="services" element={<Services />} />
                     <Route path="broadcast" element={<Broadcast />} />
                     <Route path="timeline" element={<Timeline />} />
+                    <Route path="offers" element={<Offers />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

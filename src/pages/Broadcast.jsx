@@ -14,8 +14,11 @@ import {
 } from '@mui/material'
 import { collection, addDoc, Timestamp, firestore } from '../firebase/initFirebase'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 export default function Broadcast() {
+    const { t } = useTranslation()
+
     const [messageHeader, setMessageHeader] = useState('')
     const [messageBody, setMessageBody] = useState('')
     const [building, setBuilding] = useState('A') // Default to 'A', you can change it as needed
@@ -48,13 +51,13 @@ export default function Broadcast() {
         <Container component="main" maxWidth="md">
             <CssBaseline />
             <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography variant="h5">Add Message</Typography>
+                <Typography variant="h5">{t('messages.add')}</Typography>
                 <form>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Message Header"
+                                label={t('messages.header')}
                                 variant="outlined"
                                 value={messageHeader}
                                 onChange={(e) => setMessageHeader(e.target.value)}
@@ -63,7 +66,7 @@ export default function Broadcast() {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Message Body"
+                                label={t('messages.body')}
                                 variant="outlined"
                                 multiline
                                 rows={4}
@@ -73,7 +76,7 @@ export default function Broadcast() {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="building-label">Building</InputLabel>
+                                <InputLabel id="building-label">{t('messages.building')}</InputLabel>
                                 <Select
                                     labelId="building-label"
                                     id="building"

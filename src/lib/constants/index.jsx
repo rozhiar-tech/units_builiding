@@ -9,6 +9,7 @@ import {
     HiChatAlt2,
     HiClock
 } from 'react-icons/hi'
+import { AiOutlineCoffee } from 'react-icons/ai'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
     {
@@ -64,6 +65,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         labelKey: 'sidebar.timeline',
         path: '/timeline',
         icon: <HiClock />
+    },
+    {
+        key: 'offers',
+        labelKey: 'sidebar.offers',
+        path: '/offers',
+        icon: <AiOutlineCoffee />
     }
 ]
 

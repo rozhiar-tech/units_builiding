@@ -11,8 +11,11 @@ import {
     getDownloadURL
 } from '../firebase/initFirebase'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 export default function Services() {
+    const { t } = useTranslation()
+
     const [serviceName, setServiceName] = useState('')
     const [description, setDescription] = useState('')
     const [availabilityDate, setAvailabilityDate] = useState('')
@@ -76,13 +79,13 @@ export default function Services() {
     return (
         <Container component="main" maxWidth="xs">
             <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography variant="h5">Add Service</Typography>
+                <Typography variant="h5">{t('services.add')}</Typography>
                 <form>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Service Name"
+                                label={t('services.name')}
                                 variant="outlined"
                                 value={serviceName}
                                 onChange={(e) => setServiceName(e.target.value)}
@@ -91,7 +94,7 @@ export default function Services() {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Description"
+                                label={t('services.description')}
                                 variant="outlined"
                                 multiline
                                 rows={4}
@@ -103,7 +106,7 @@ export default function Services() {
                             <TextField
                                 fullWidth
                                 type="date"
-                                label="Availability Date"
+                                label={t('services.date')}
                                 variant="outlined"
                                 InputLabelProps={{ shrink: true }}
                                 value={availabilityDate}
@@ -120,7 +123,7 @@ export default function Services() {
                         </div>
                     </Grid>
                     <Button variant="contained" color="primary" onClick={handleAddService}>
-                        Add Service
+                        {t('services.add')}
                     </Button>
                 </form>
             </Paper>

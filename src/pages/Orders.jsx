@@ -18,12 +18,12 @@ import { FcFilledFilter } from 'react-icons/fc'
 import Modal from 'react-modal'
 import './custom.css'
 import { productData } from '../data/data'
-import { TextField } from '@mui/material'
-
-
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 export default function AddClient() {
+    const { t } = useTranslation()
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -230,7 +230,9 @@ export default function AddClient() {
     return (
         <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
             <div className="mb-5">
-                <label className="block text-sm text-gray-700">{isUserTypeEnabled ? 'Client' : 'Admin'}</label>
+                <label className="block text-sm text-gray-700">
+                    {isUserTypeEnabled ? `${t('orders.client')}` : `${t('orders.admin')}`}
+                </label>
                 <div className="mt-1">
                     <Switch
                         onChange={handleToggleChange}
@@ -264,7 +266,7 @@ export default function AddClient() {
                     htmlFor="floating_email"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
-                    Email address
+                    {`${t('orders.email')}`}
                 </label>
             </div>
 
@@ -283,7 +285,7 @@ export default function AddClient() {
                     htmlFor="floating_password"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
-                    Password
+                    {`${t('orders.password')}`}
                 </label>
             </div>
 
@@ -303,7 +305,7 @@ export default function AddClient() {
                         htmlFor="floating_first_name"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        First name
+                        {`${t('orders.fname')}`}
                     </label>
                 </div>
 
@@ -322,7 +324,7 @@ export default function AddClient() {
                         htmlFor="floating_last_name"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        Last name
+                        {`${t('orders.lname')}`}
                     </label>
                 </div>
             </div>
@@ -343,7 +345,7 @@ export default function AddClient() {
                         htmlFor="floating_phone"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        Phone number (07********)
+                        {`${t('orders.phone')}`} (07********)
                     </label>
                 </div>
 
@@ -359,7 +361,7 @@ export default function AddClient() {
                         >
                             <span className="peer-focus:font-medium duration-300 transform -translate-y-6 scale-75 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                 {/* Replace the content inside the span with your desired label */}
-                                {propertyCode === '' ? 'Property Code' : propertyCode}
+                                {propertyCode === '' ? `${t('orders.pcode')}` : propertyCode}
                             </span>
                         </button>
                         <button
@@ -390,74 +392,19 @@ export default function AddClient() {
                             }}
                             center
                         >
-                            <h2 className="text-white">Filter Qualification</h2>
+                            <h2 className="text-white">{t('orders.filtername')}</h2>
 
                             {/* Add filters for each column */}
-                            <div className="mb-4">
-                                <label htmlFor="filterColumn1" className="text-white block mb-2">
-                                    Filter by وجهە:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="filterColumn1"
-                                    value={filterCriteria.Column1 || ''}
-                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, Column1: e.target.value })}
-                                    className="w-full p-2 border rounded-md text-black"
-                                    placeholder="Enter filter criteria"
-                                />
-                            </div>
 
                             <div className="mb-4">
                                 <label htmlFor="filterرقم_شقه" className="text-white block mb-2">
-                                    Filter by رقم_شقه:
+                                    {t('orders.propertycode')}:
                                 </label>
                                 <input
                                     type="text"
                                     id="filterرقم_شقه"
                                     value={filterCriteria['رقم_شقه'] || ''}
                                     onChange={(e) => setFilterCriteria({ ...filterCriteria, رقم_شقه: e.target.value })}
-                                    className="w-full p-2 border rounded-md text-black"
-                                    placeholder="Enter filter criteria"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="filterمتر" className="text-white block mb-2">
-                                    Filter by متر:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="filterمتر"
-                                    value={filterCriteria['متر'] || ''}
-                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, متر: e.target.value })}
-                                    className="w-full p-2 border rounded-md text-black"
-                                    placeholder="Enter filter criteria"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="filterسعر_متر" className="text-white block mb-2">
-                                    Filter by سعر_متر:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="filterسعر_متر"
-                                    value={filterCriteria['سعر_متر'] || ''}
-                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, سعر_متر: e.target.value })}
-                                    className="w-full p-2 border rounded-md text-black"
-                                    placeholder="Enter filter criteria"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="filterسعر_كلي" className="text-white block mb-2">
-                                    Filter by سعر_كلي:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="filterسعر_كلي"
-                                    value={filterCriteria['سعر_كلي'] || ''}
-                                    onChange={(e) => setFilterCriteria({ ...filterCriteria, سعر_كلي: e.target.value })}
                                     className="w-full p-2 border rounded-md text-black"
                                     placeholder="Enter filter criteria"
                                 />
@@ -520,25 +467,11 @@ export default function AddClient() {
                         </Modal>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            disabled
-                            name="propertyCode"
-                            id="floating_company"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                        />
-                        <label
-                            htmlFor="floating_company"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Property Code
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled ? (
                     <div className="mb-5">
-                        <label className="block text-sm text-gray-700">Payment Plan</label>
+                        <label className="block text-sm text-gray-700">{`${t('orders.pplan')}`}</label>
                         <div className="mt-1">
                             <Switch
                                 onChange={handleToggleChangePayment}
@@ -558,22 +491,7 @@ export default function AddClient() {
                         </div>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="text"
-                            name="paymentPlan"
-                            id="floating_paymentPlan"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_paymentPlan"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Payment Plan
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 <div className="relative z-0 w-full mb-5 group">
                     <input
@@ -590,7 +508,7 @@ export default function AddClient() {
                         htmlFor="floating_userType"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        User Type
+                        {`${t('orders.utype')}`}
                     </label>
                 </div>
                 {isUserTypeEnabled && isUserPaymentPlan ? (
@@ -609,26 +527,11 @@ export default function AddClient() {
                             htmlFor="floating_downPayment"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Down Payment
+                            {`${t('orders.dpayment')}`}
                         </label>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="downPayment"
-                            id="floating_downPayment"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_downPayment"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Down Payment
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
@@ -646,26 +549,11 @@ export default function AddClient() {
                             htmlFor="floating_downPayment"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Overall Payment
+                            {`${t('orders.ovpayment')}`}
                         </label>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="overallPayment"
-                            id="floating_overallPayment"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_overallPayment"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Overall Payment
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
@@ -683,26 +571,11 @@ export default function AddClient() {
                             htmlFor="floating_monthlyPayment"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Monthly Payment
+                            {`${t('orders.mpayment')}`}
                         </label>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="monthlyPayment"
-                            id="floating_monthlyPayment"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_monthlyPayment"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Monthly Payment
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
@@ -720,26 +593,11 @@ export default function AddClient() {
                             htmlFor="floating_keyPayment"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Key Payment
+                            {`${t('orders.kpayment')}`}
                         </label>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="keyPayment"
-                            id="floating_keyPayment"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_keyPayment"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Key Payment
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
@@ -757,26 +615,11 @@ export default function AddClient() {
                             htmlFor="floating_afterKeyPayment"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            After KeyPayment
+                            {`${t('orders.afkey')}`}
                         </label>
                     </div>
                 ) : (
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="afterKeyPayment"
-                            id="floating_afterKeyPayment"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            disabled
-                        />
-                        <label
-                            htmlFor="floating_afterKeyPayment"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            After KeyPayment
-                        </label>
-                    </div>
+                    <div></div>
                 )}
                 {isUserTypeEnabled && isUserPaymentPlan ? (
                     <div className="relative z-0 w-full mb-5 group">
@@ -794,16 +637,11 @@ export default function AddClient() {
                             htmlFor="floating_dateofmonth"
                             className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Date of the month to pay
+                            {`${t('orders.dopay')}`}
                         </label>
                     </div>
                 ) : (
-                    <TextField
-                        className="w-full text-sm"
-                        label="Date of Payment each month"
-                        value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
-                        disabled
-                    />
+                    <div></div>
                 )}
             </div>
 

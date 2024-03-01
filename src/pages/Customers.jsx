@@ -14,10 +14,13 @@ import {
     TableSortLabel
 } from '@mui/material'
 import TextField from '@mui/material/TextField'
+import { useTranslation } from 'react-i18next'
 
 Modal.setAppElement('#root') // Set the root element for accessibility
 
 const Customers = () => {
+    const { t } = useTranslation()
+
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -111,7 +114,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'firstName' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('firstName')}
                                 >
-                                    First Name
+                                    {t('customers.fname')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -120,7 +123,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'lastName' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('lastName')}
                                 >
-                                    Last Name
+                                    {t('customers.lname')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -129,7 +132,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'email' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('email')}
                                 >
-                                    Email
+                                    {t('customers.email')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -138,7 +141,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'paymentPlan' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('paymentPlan')}
                                 >
-                                    Payment Plan
+                                    {t('customers.pplan')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -147,7 +150,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'downPayment' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('downPayment')}
                                 >
-                                    Down Payment
+                                    {t('customers.dpayment')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -156,7 +159,7 @@ const Customers = () => {
                                     direction={sortConfig.key === 'propertyCode' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('propertyCode')}
                                 >
-                                    Property Code
+                                    {t('customers.pcode')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -165,10 +168,10 @@ const Customers = () => {
                                     direction={sortConfig.key === 'phone' ? sortConfig.direction : 'asc'}
                                     onClick={() => requestSort('phone')}
                                 >
-                                    Phone
+                                    {t('customers.phone')}
                                 </TableSortLabel>
                             </TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>{t('customers.action')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

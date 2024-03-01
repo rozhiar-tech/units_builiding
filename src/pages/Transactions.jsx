@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { collection, getDocs, firestore } from '../firebase/initFirebase'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 const Transaction = () => {
+    const { t } = useTranslation()
+
     const [transactions, setTransactions] = useState([])
 
     useEffect(() => {
@@ -28,13 +31,13 @@ const Transaction = () => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>User ID</TableCell>
-                        <TableCell>Transaction Date</TableCell>
-                        <TableCell>Down Payment</TableCell>
-                        <TableCell>Overall Payment</TableCell>
-                        <TableCell>Remaining Payment</TableCell>
-                        <TableCell>Payment Plan</TableCell>
-                        <TableCell>Property Code</TableCell>
+                        <TableCell>{t('transactions.userId')}</TableCell>
+                        <TableCell>{t('transactions.transactiondate')}</TableCell>
+                        <TableCell>{t('transactions.dpayment')}</TableCell>
+                        <TableCell>{t('transactions.ovpayment')}</TableCell>
+                        <TableCell>{t('transactions.rpayment')}</TableCell>
+                        <TableCell>{t('transactions.pplan')}</TableCell>
+                        <TableCell>{t('transactions.pcode')}</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

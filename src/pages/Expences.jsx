@@ -16,8 +16,11 @@ import {
 import { addDoc, collection, firestore, serverTimestamp, getDocs } from '../firebase/initFirebase'
 import { toast } from 'react-toastify'
 import SendIcon from '@mui/icons-material/Send'
+import { useTranslation } from 'react-i18next'
 
 const Expenses = () => {
+    const { t } = useTranslation()
+
     const [expense, setExpense] = useState({
         description: '',
         amount: ''
@@ -79,7 +82,7 @@ const Expenses = () => {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Description"
+                                label={t('expences.description')}
                                 name="description"
                                 value={expense.description}
                                 onChange={handleInputChange}
@@ -88,7 +91,7 @@ const Expenses = () => {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Amount"
+                                label={t('expences.amount')}
                                 name="amount"
                                 type="number"
                                 value={expense.amount}
@@ -104,21 +107,21 @@ const Expenses = () => {
                         onClick={handleAddExpense}
                         endIcon={<SendIcon />}
                     >
-                        Add Expense
+                        {t('expences.add')}
                     </Button>
                 </form>
 
                 {/* Display Expenses Table */}
                 <Typography variant="h5" align="center" style={{ marginTop: '20px' }}>
-                    Expenses List
+                    {t('expences.list')}
                 </Typography>
                 <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Amount</TableCell>
-                                <TableCell>Date</TableCell>
+                                <TableCell>{t('expences.description')}</TableCell>
+                                <TableCell>{t('expences.amount')}</TableCell>
+                                <TableCell>{t('expences.date')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
