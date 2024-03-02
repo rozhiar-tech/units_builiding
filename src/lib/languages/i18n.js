@@ -127,6 +127,25 @@ i18n
                         description: 'Offer Description',
                         start: 'Start Date',
                         end: 'End Date'
+                    },
+                    client: {
+                        welcome: 'Welcome',
+                        dpayment: 'Down Payment',
+                        mpayment: 'Monthly Payment',
+                        npayment: 'Next Payment Date',
+                        upayment: 'Days until Next Payment',
+                        step: 'Current Step',
+                        section: 'Service Section',
+                        psection: 'Property Section',
+                        pview: 'Property View',
+                        floor: 'Floor',
+                        anumber: 'Apartment Number',
+                        area: 'Area (متر)',
+                        pmeter: 'Price Per Square Meter',
+                        total: 'Total Price',
+                        of:'of every Month',
+                        new:'New Messages',
+                        offer:'Offers'
                     }
                 }
             },
@@ -169,6 +188,7 @@ i18n
                     log: {
                         logOut: 'خروج'
                     },
+
                     orders: {
                         admin: 'مسؤل',
                         client: 'عميل',
@@ -240,6 +260,26 @@ i18n
                         start: 'تاريخ البدء',
                         end: 'تاريخ الانتهاء',
                         add: 'إضافة عرض جديد'
+                    },
+                    client: {
+                        welcome: 'مرحباً',
+                        dpayment: 'دفعة مبدئية',
+                        mpayment: 'الدفع الشهري',
+                        npayment: 'تاريخ الدفع التالي',
+                        upayment: 'أيام حتى الدفعة التالية',
+                        step: 'الخطوة الحالية',
+                        section: 'قسم الخدمة',
+                        psection: 'قسم الممتلكات',
+                        pview: 'عرض العقار',
+                        floor: 'أرضية',
+                        anumber: 'رقم الشقة',
+                        area: 'المساحة (متر)',
+                        pmeter: 'سعر المتر المربع',
+                        total: 'السعر الكلي',
+                        of:'من كل شهر',
+                        new:'رسائل جديدة',
+                        offer:'عروض'
+
                     }
                 }
             },
@@ -353,6 +393,26 @@ i18n
                         start: 'بەرواری دەست پێکردن',
                         end: 'بەرواری کۆتایهاتن',
                         add: 'زیاد کردنی ئۆفەر'
+                    },
+                    client: {
+                        welcome: 'بەخێر بێیت',
+                        dpayment: 'پارەی سەرەتا',
+                        mpayment: 'پارەی مانگانە',
+                        npayment: 'پارەیانی داهاتووت',
+                        upayment: 'رۆژ تا پارەیانی داهاتووت',
+                        step: 'هەنگاوی ئێستا',
+                        section: 'بەشی خزمەت گوزاری',
+                        psection: 'دەربارەی موڵکەکەت',
+                        pview: 'ڕووی موڵکەکەت',
+                        floor: 'نهۆم',
+                        anumber: 'ژمارەی موڵکەکەت',
+                        area: 'ڕووبەر (متر)',
+                        pmeter: 'نرخ بۆ هەر مەتر دووجایەک',
+                        total: 'کۆی پارە',
+                        of:'هەموو مانگێک',
+                        new:'نامەی تازە',
+                        offer:'ئۆفەرەکان'
+
                     }
                 }
             }

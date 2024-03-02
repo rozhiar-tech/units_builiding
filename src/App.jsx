@@ -38,14 +38,14 @@ function App() {
                     if (!querySnapshot.empty) {
                         const userData = querySnapshot.docs[0].data()
                         const userType = userData.userType
-                        console.log('User type:', userType)
+                        // console.log('User type:', userType)
 
                         // Redirect based on user type
                         if (userType === 'admin') {
-                            console.log('Admin user')
+                            // console.log('Admin user')
                             setAdmin(true)
                         } else if (userType === 'client') {
-                            console.log('Client user')
+                            // console.log('Client user')
                             setAdmin(false)
                         }
                     }

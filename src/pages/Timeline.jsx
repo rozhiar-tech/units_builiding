@@ -21,7 +21,7 @@ const Timeline = () => {
 
     const [building, setBuilding] = useState('')
     const [milestones, setMilestones] = useState([])
-    const [newMilestone, setNewMilestone] = useState({ label: '', date: '', description: '' })
+    const [newMilestone, setNewMilestone] = useState({ label: '', endDate: '', startDate: '', description: '' })
 
     const handleBuildingChange = (event) => {
         setBuilding(event.target.value)
@@ -29,14 +29,15 @@ const Timeline = () => {
     }
 
     const handleAddMilestone = async () => {
-        if (newMilestone.label && newMilestone.date && newMilestone.description) {
+        if (newMilestone.label && newMilestone.startDate && newMilestone.endDate && newMilestone.description) {
             setMilestones([...milestones, newMilestone])
-            setNewMilestone({ label: '', date: '', description: '' })
+            setNewMilestone({ label: '', endDate: '', startDate: '', description: '' })
 
             try {
                 const docRef = await addDoc(collection(firestore, building), {
                     label: newMilestone.label,
-                    date: newMilestone.date,
+                    endDate: newMilestone.endDate,
+                    startDate: newMilestone.startDate,
                     description: newMilestone.description,
                     timestamp: serverTimestamp()
                 })
@@ -100,12 +101,20 @@ const Timeline = () => {
                     onChange={(e) => setNewMilestone({ ...newMilestone, description: e.target.value })}
                 />
                 <TextField
-                    label="Milestone Date"
+                    label="Start Date"
                     type="date"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
-                    value={newMilestone.date}
-                    onChange={(e) => setNewMilestone({ ...newMilestone, date: e.target.value })}
+                    value={newMilestone.startDate}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, startDate: e.target.value })}
+                />
+                <TextField
+                    label="End Date"
+                    type="date"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    value={newMilestone.endDate}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, endDate: e.target.value })}
                 />
                 <Button variant="contained" onClick={handleAddMilestone}>
                     {t('timeline.add')}

@@ -19,7 +19,7 @@ export default function TransactionChart() {
                     Expense: Number(doc.data().amount),
                     date: doc.data().timestamp.toDate()
                 }))
-                console.log(expensesData)
+                // console.log(expensesData)
 
                 // Fetch income from the Transaction collection
                 const transactionCollection = collection(firestore, 'Transactions')
@@ -29,7 +29,7 @@ export default function TransactionChart() {
                     Income: Number(doc.data().downPayment),
                     date: doc.data().transactionDate.toDate() // Assuming 'transactionDate' is a Firebase timestamp field
                 }))
-                console.log(incomeData)
+                // console.log(incomeData)
 
                 // Merge the two datasets based on the 'name' field
                 const mergedData = expensesData.map((expenseItem) => {

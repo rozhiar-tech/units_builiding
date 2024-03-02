@@ -21,6 +21,9 @@ import { firestore } from '../firebase/initFirebase'
 import { productData } from '../data/data'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import { HiOutlineLogout } from 'react-icons/hi'
+import Header from '../components/shared/Header'
+import { useTranslation } from 'react-i18next'
+import { Audio } from 'react-loader-spinner'
 
 const steps = ['January', 'February', 'April', 'July', 'October', 'December']
 const linkClass =
@@ -28,6 +31,8 @@ const linkClass =
 const darkThemeBackground = '#070F2B'
 const darkThemeText = '#FFFFFF'
 const ClientDashboard = ({ user }) => {
+    const { t } = useTranslation()
+
     // Define state variables
     const [userData, setUserData] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -38,8 +43,32 @@ const ClientDashboard = ({ user }) => {
     const [notificationCount, setNotificationCount] = useState(0)
     const [messages, setMessages] = useState([])
     const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [offers, setOffers] = useState([])
 
     // useEffect hook to fetch data
+    useEffect(() => {
+        const fetchOffers = async () => {
+            try {
+                const offersCollection = collection(firestore, 'offers')
+                const offersSnapshot = await getDocs(offersCollection)
+                const currentDate = new Date()
+
+                const offersData = offersSnapshot.docs
+                    .map((doc) => ({ id: doc.id, ...doc.data() }))
+                    .filter((offer) => {
+                        const endDate = offer.endDate.toDate()
+
+                        return currentDate <= endDate
+                    })
+
+                setOffers(offersData)
+            } catch (error) {
+                console.error('Error fetching offers data:', error.message)
+            }
+        }
+
+        fetchOffers()
+    }, [])
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -56,7 +85,6 @@ const ClientDashboard = ({ user }) => {
                                 setUserData(userData)
                                 setLoading(false)
                                 fetchMessages(userData)
-                                console.log('user is', userData)
                             }
                         })
                     } else {
@@ -152,11 +180,11 @@ const ClientDashboard = ({ user }) => {
                     if (!constructionStepsSnapshot.empty) {
                         const stepsData = constructionStepsSnapshot.docs.map((doc) => doc.data())
                         // Sort the steps based on the date
-                        const sortedStepsData = stepsData.sort((a, b) => new Date(a.date) - new Date(b.date))
+                        const sortedStepsData = stepsData.sort((a, b) => new Date(a.startDate) - new Date(b.endDate))
                         setConstructionSteps(sortedStepsData)
 
                         // Find the first step with a date greater than the current date
-                        const nextStepIndex = sortedStepsData.findIndex((step) => new Date(step.date) > new Date())
+                        const nextStepIndex = sortedStepsData.findIndex((step) => new Date(step.startDate) > new Date())
                         setCurrentStep(nextStepIndex >= 0 ? nextStepIndex : 0)
                     } else {
                         console.error(`No construction steps found for property code ${userData.propertyCode}`)
@@ -188,27 +216,7 @@ const ClientDashboard = ({ user }) => {
         setOpenSnackbar(false)
     }
     // Define function to get progress
-    const getProgress = (startDate, endDate) => {
-        const start = new Date(startDate)
-        const end = new Date(endDate)
-        const progress = ((new Date() - start) / (end - start)) * 100
 
-        return progress < 0 ? 0 : progress > 100 ? 100 : progress
-    }
-
-    // Define function to get the next payment date
-    // const getNextPaymentDate = () => {
-    //     const currentDate = new Date()
-    //     const currentDay = currentDate.getDate()
-
-    //     // If today is the 5th or later, set the next payment for the 5th of the next month
-    //     const nextPaymentDate = currentDay >= 5 ? addMonths(currentDate, 1) : currentDate
-
-    //     return new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth(), 5)
-    // }
-
-    // Define function to get the days until next payment
-    // Define function to get the days until next payment
     const getDaysUntilNextPayment = () => {
         const currentDate = new Date()
 
@@ -228,22 +236,15 @@ const ClientDashboard = ({ user }) => {
 
         return daysRemaining
     }
+    const calculateProgressPercentage = (startDate, endDate) => {
+        const currentDate = new Date()
+        const totalDuration = new Date(endDate) - new Date(startDate)
+        const elapsedDuration = currentDate - new Date(startDate)
+        const progressPercentage = (elapsedDuration / totalDuration) * 100
+        console.log(Math.min(100, Math.max(0, progressPercentage)))
 
-    // Perform logout action here, using the Firebase authentication library or your preferred method
-    // For Firebase, you can use auth.signOut()
-
-    // For example:
-    // auth.signOut().then(() => {
-    //     console.log("User signed out");
-    //     // You may want to redirect the user to the login page after logout
-    //     // navigate('/login');
-    // }).catch((error) => {
-    //     console.error("Error signing out:", error);
-    // });
-
-    // After logout, you might want to redirect the user to the login page
-    // For example, if you're using react-router-dom:
-    // navigate('/login');
+        return Math.min(100, Math.max(0, progressPercentage)) // Ensure the percentage is between 0 and 100
+    }
 
     return (
         <Paper
@@ -259,6 +260,8 @@ const ClientDashboard = ({ user }) => {
             }}
         >
             <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: '16px' }}>
+                <Header />
+
                 <IconButton color="primary" onClick={handleOpenSnackbar}>
                     <Badge badgeContent={notificationCount} color="error">
                         <NotificationsIcon />
@@ -272,7 +275,6 @@ const ClientDashboard = ({ user }) => {
                             signOut(auth)
                                 .then(() => {
                                     // Sign-out successful.
-                                    console.log('Sign-out successful.')
                                 })
                                 .catch((error) => {
                                     // An error happened.
@@ -282,19 +284,28 @@ const ClientDashboard = ({ user }) => {
                     >
                         <HiOutlineLogout />
                     </button>
-                    Logout
+                    {t('log.logOut')}
                 </div>
             </Box>
-            <Typography variant="h4" mb={4}>
-                Client Dashboard - {userData ? userData.firstName : 'Guest'}
+            <Typography variant="h4" mb={4} mr={30}>
+                {t('client.welcome')} - {userData ? userData.firstName : 'Guest'}
             </Typography>
-
             {loading ? (
-                <Typography variant="h5">Loading...</Typography>
+                <div className="bg-black h-screen w-screen flex justify-center items-center">
+                    <Audio
+                        height="80"
+                        width="80"
+                        radius="9"
+                        color="green"
+                        ariaLabel="loading"
+                        wrapperStyle
+                        wrapperClass
+                    />{' '}
+                </div>
             ) : (
                 <Stack sx={{ width: '100%' }} spacing={4}>
                     <Typography variant="h5" mb={2}>
-                        Current Step: {steps[currentStep]}
+                        {t('client.step')}: {steps[currentStep]}
                     </Typography>
                     <Stepper alternativeLabel activeStep={currentStep} sx={{ width: '100%', mb: 4 }}>
                         {constructionSteps.map((step, index) => (
@@ -304,25 +315,32 @@ const ClientDashboard = ({ user }) => {
                                         {step.label}
                                     </Typography>
                                     <Typography color={'white'} variant="caption">
-                                        {step.date}
+                                        {step.startDate}
                                     </Typography>
                                 </StepLabel>
                             </Step>
                         ))}
                     </Stepper>
-                    {constructionSteps.map((step, index) => (
-                        <div key={index} style={{ marginBottom: '20px' }}>
-                            <Typography variant="body2">{step.label}</Typography>
-                            <Typography variant="caption">{step.date}</Typography>
-                            {/* Check if the date has passed, then show progress */}
-                            {new Date(step.date) < new Date() && (
-                                <LinearProgress
-                                    variant="determinate"
-                                    value={getProgress(constructionSteps[0].date, step.date)}
-                                />
-                            )}
-                        </div>
-                    ))}
+                    {constructionSteps.map((step, index) => {
+                        const startDate = new Date(step.startDate)
+                        const endDate = new Date(step.endDate)
+
+                        return (
+                            <div key={index} style={{ marginBottom: '20px' }}>
+                                <Typography variant="body2">{step.description}</Typography>
+                                <Typography variant="caption">
+                                    {startDate.toDateString()} - {endDate.toDateString()}
+                                </Typography>
+                                {/* Calculate progress percentage */}
+                                {startDate <= new Date() && (
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={calculateProgressPercentage(startDate, endDate)}
+                                    />
+                                )}
+                            </div>
+                        )
+                    })}
 
                     {userData && (
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
@@ -335,7 +353,7 @@ const ClientDashboard = ({ user }) => {
                                 }}
                             >
                                 <Typography variant="h5" mb={2}>
-                                    Down Payment
+                                    {t('client.dpayment')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     ${userData.downPayment || 0}
@@ -351,7 +369,7 @@ const ClientDashboard = ({ user }) => {
                                 }}
                             >
                                 <Typography variant="h5" mb={2}>
-                                    Monthly Payment
+                                    {t('client.mpayment')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     ${userData.monthlyPayment || 0}
@@ -367,10 +385,10 @@ const ClientDashboard = ({ user }) => {
                                 }}
                             >
                                 <Typography variant="h5" mb={2}>
-                                    Next Payment Date
+                                    {t('client.npayment')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
-                                    {userData.dateOfPaymentMonthly} of every Month
+                                    {userData.dateOfPaymentMonthly} {t('client.of')}
                                 </Typography>
                             </Box>
 
@@ -383,7 +401,7 @@ const ClientDashboard = ({ user }) => {
                                 }}
                             >
                                 <Typography variant="h5" mb={2}>
-                                    Days until Next Payment
+                                    {t('client.upayment')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {getDaysUntilNextPayment()}
@@ -393,7 +411,7 @@ const ClientDashboard = ({ user }) => {
                     )}
 
                     <Typography variant="h4" mb={4}>
-                        Services Section
+                        {t('client.section')}
                     </Typography>
 
                     {loading ? (
@@ -428,14 +446,14 @@ const ClientDashboard = ({ user }) => {
                     )}
 
                     <Typography variant="h4" mb={4}>
-                        Property Section
+                        {t('client.psection')}
                     </Typography>
 
                     {propertyDetails ? (
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
                             <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Property View
+                                    {t('client.pview')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.Column1}
@@ -444,7 +462,7 @@ const ClientDashboard = ({ user }) => {
 
                             <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Floor
+                                    {t('client.floor')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.قات}
@@ -453,7 +471,7 @@ const ClientDashboard = ({ user }) => {
 
                             <Box bgcolor="#535C91" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Apartment Number
+                                    {t('client.anumber')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.رقم_شقه}
@@ -462,7 +480,7 @@ const ClientDashboard = ({ user }) => {
 
                             <Box bgcolor="#9290C3" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Area (متر)
+                                    {t('client.area')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.متر}
@@ -471,7 +489,7 @@ const ClientDashboard = ({ user }) => {
 
                             <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Price per Square Meter
+                                    {t('client.pmeter')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.سعر_متر}
@@ -480,7 +498,7 @@ const ClientDashboard = ({ user }) => {
 
                             <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
                                 <Typography variant="h5" mb={2}>
-                                    Total Price
+                                    {t('client.total')}
                                 </Typography>
                                 <Typography variant="body1" mb={2}>
                                     {propertyDetails.سعر_كلي}
@@ -501,7 +519,7 @@ const ClientDashboard = ({ user }) => {
             >
                 <Paper elevation={3} sx={{ p: 2, borderRadius: 4 }}>
                     <Typography variant="h6" gutterBottom>
-                        New Messages
+                        {t('client.new')}
                     </Typography>
                     {messages.map((message, index) => (
                         <div key={index}>
@@ -516,6 +534,33 @@ const ClientDashboard = ({ user }) => {
                     ))}
                 </Paper>
             </Snackbar>
+            <Typography variant="h4" mb={3} mt={5}>
+                {t('client.offer')}
+            </Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
+                {offers.map((offer) => (
+                    <Box
+                        key={offer.id}
+                        bgcolor="#1B1A55"
+                        p={3}
+                        borderRadius={8}
+                        width={{ xs: '100%', sm: '90%' }}
+                        boxShadow={3}
+                        color="#FFFFFF"
+                    >
+                        <Typography variant="h6">{offer.name}</Typography>
+                        <Typography variant="h4">{offer.description}</Typography>
+                        <Typography variant="body1">{`Start Date: ${offer.startDate
+                            .toDate()
+                            .toLocaleDateString()}`}</Typography>
+                        <Typography variant="body1">{`End Date: ${offer.endDate
+                            .toDate()
+                            .toLocaleDateString()}`}</Typography>
+                    </Box>
+                ))}
+            </Stack>
+
+            {/* Render your offers data using MUI components */}
         </Paper>
     )
 }

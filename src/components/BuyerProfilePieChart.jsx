@@ -37,7 +37,7 @@ const BuyerProfilePieChart = () => {
                     const matchedProductDetail = productData.find((product) => product.رقم_شقه === propertyCode)
 
                     if (matchedProductDetail && [152, 203].includes(matchedProductDetail.متر)) {
-                        console.log('matchedProductDetail', matchedProductDetail)
+                        // console.log('matchedProductDetail', matchedProductDetail)
                         meterCounts[matchedProductDetail.متر]++
                     }
                 })
