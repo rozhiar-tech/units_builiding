@@ -11,7 +11,12 @@ import {
     Badge,
     IconButton,
     Snackbar,
-    Divider
+    Divider,
+    Grid,
+    Avatar,
+    Card,
+    CardMedia,
+    CardContent
 } from '@mui/material'
 import classNames from 'classnames'
 
@@ -24,7 +29,12 @@ import { HiOutlineLogout } from 'react-icons/hi'
 import Header from '../components/shared/Header'
 import { useTranslation } from 'react-i18next'
 import { Audio } from 'react-loader-spinner'
-
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn' // Replace with your desired icons
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
+import image152 from '../assets/2.2.png'
+import image203 from '../assets/01.png'
 const steps = ['January', 'February', 'April', 'July', 'October', 'December']
 const linkClass =
     'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
@@ -245,6 +255,7 @@ const ClientDashboard = ({ user }) => {
 
         return Math.min(100, Math.max(0, progressPercentage)) // Ensure the percentage is between 0 and 100
     }
+    const gradientBackground = 'linear-gradient(135deg, #EA98DA, #D291DF, #BA89E4, #A382EA, #8B7BEF, #7373F4, #5B6CF9)'
 
     return (
         <Paper
@@ -343,71 +354,121 @@ const ClientDashboard = ({ user }) => {
                     })}
 
                     {userData && (
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
-                            <Box
-                                sx={{
-                                    bgcolor: '#1B1A55', // Dark theme background color
-                                    color: '#FFFFFF', // Dark theme text color
-                                    p: 3,
-                                    borderRadius: 8
-                                }}
-                            >
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.dpayment')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    ${userData.downPayment || 0}
-                                </Typography>
-                            </Box>
+                        <Grid
+                            container
+                            spacing={2}
+                            mt={4}
+                            style={{
+                                background: gradientBackground,
 
-                            <Box
-                                sx={{
-                                    bgcolor: '#535C91', // Dark theme background color
-                                    color: '#FFFFFF', // Dark theme text color
-                                    p: 3,
-                                    borderRadius: 8
-                                }}
-                            >
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.mpayment')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    ${userData.monthlyPayment || 0}
-                                </Typography>
-                            </Box>
+                                padding: '20px',
+                                borderRadius: '12px',
+                                height: 'auto',
+                                display: 'flex',
+                                alignItems: 'center', // Center items horizontally
+                                justifyContent: 'space-around' // Add space around items
+                            }}
+                        >
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Box
+                                    sx={{
+                                        bgcolor: '#1B1A55',
+                                        color: '#FFFFFF',
+                                        p: 3,
+                                        borderRadius: 8,
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Avatar sx={{ bgcolor: '#FFFFFF', color: '#1B1A55' }}>
+                                        <MonetizationOnIcon />
+                                    </Avatar>
+                                    <Typography variant="h5" mb={2}>
+                                        {t('client.dpayment')}
+                                    </Typography>
+                                    <Typography variant="body1" mb={2}>
+                                        ${userData.downPayment || 0}
+                                    </Typography>
+                                </Box>
+                            </Grid>
 
-                            <Box
-                                sx={{
-                                    bgcolor: '#9290C3', // Dark theme background color
-                                    color: '#FFFFFF', // Dark theme text color
-                                    p: 3,
-                                    borderRadius: 8
-                                }}
-                            >
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.npayment')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {userData.dateOfPaymentMonthly} {t('client.of')}
-                                </Typography>
-                            </Box>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Box
+                                    sx={{
+                                        bgcolor: '#535C91',
+                                        color: '#FFFFFF',
+                                        p: 3,
+                                        borderRadius: 8,
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Avatar sx={{ bgcolor: '#FFFFFF', color: '#535C91' }}>
+                                        <CalendarTodayIcon />
+                                    </Avatar>
+                                    <Typography variant="h5" mb={2}>
+                                        {t('client.mpayment')}
+                                    </Typography>
+                                    <Typography variant="body1" mb={2}>
+                                        ${userData.monthlyPayment || 0}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Box
+                                    sx={{
+                                        bgcolor: '#9290C3',
+                                        color: '#FFFFFF',
+                                        p: 3,
+                                        borderRadius: 8,
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Avatar sx={{ bgcolor: '#FFFFFF', color: '#9290C3' }}>
+                                        <AccessTimeIcon />
+                                    </Avatar>
+                                    <Typography variant="h5" mb={2}>
+                                        {t('client.npayment')}
+                                    </Typography>
+                                    <Typography variant="body1" mb={2}>
+                                        {userData.dateOfPaymentMonthly} {t('client.of')}
+                                    </Typography>
+                                </Box>
+                            </Grid>
 
-                            <Box
-                                sx={{
-                                    bgcolor: '#070F2B', // Dark theme background color
-                                    color: '#FFFFFF', // Dark theme text color
-                                    p: 3,
-                                    borderRadius: 8
-                                }}
-                            >
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.upayment')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {getDaysUntilNextPayment()}
-                                </Typography>
-                            </Box>
-                        </Stack>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Box
+                                    sx={{
+                                        bgcolor: '#070F2B',
+                                        color: '#FFFFFF',
+                                        p: 3,
+                                        borderRadius: 8,
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Avatar sx={{ bgcolor: '#FFFFFF', color: '#070F2B' }}>
+                                        <LoyaltyIcon />
+                                    </Avatar>
+                                    <Typography variant="h5" mb={2}>
+                                        {t('client.upayment')}
+                                    </Typography>
+                                    <Typography variant="body1" mb={2}>
+                                        {getDaysUntilNextPayment()}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            {/* Add similar code for other items */}
+                        </Grid>
                     )}
 
                     <Typography variant="h4" mb={4}>
@@ -417,94 +478,132 @@ const ClientDashboard = ({ user }) => {
                     {loading ? (
                         <Typography variant="h5">Loading...</Typography>
                     ) : (
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
+                        <Stack
+                            direction={{ xs: 'column', sm: 'row' }}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                            spacing={2}
+                            mt={4}
+                        >
                             {services.map((service, index) => (
-                                <Box
-                                    key={index}
-                                    bgcolor="#1B1A55"
-                                    p={3}
-                                    borderRadius={8}
-                                    width={{ xs: '100%', sm: '30%' }}
-                                    boxShadow={3}
-                                    color="#FFFFFF"
-                                >
-                                    <Typography variant="h5" mb={2}>
-                                        {service.serviceName}
-                                    </Typography>
-                                    <Typography variant="body1" mb={2}>
-                                        {service.description}
-                                    </Typography>
-                                    {/* You can customize the image display as needed */}
-                                    <img
-                                        src={service.imgUrl}
-                                        alt={service.serviceName}
-                                        style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+                                <Card sx={{ maxWidth: 345 }}>
+                                    <CardMedia
+                                        sx={{ height: 240, width: 400 }}
+                                        image={service.imgUrl}
+                                        title={service.serviceName}
                                     />
-                                </Box>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {service.serviceName}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {service.description}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
                             ))}
                         </Stack>
                     )}
+                    <Typography variant="h4" mb={3} mt={5}>
+                        {t('client.offer')}
+                    </Typography>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
+                        {offers.map((offer) => (
+                            <Box
+                                key={offer.id}
+                                bgcolor="#1B1A55"
+                                p={3}
+                                borderRadius={8}
+                                width={{ xs: '100%', sm: '90%' }}
+                                boxShadow={3}
+                                color="#FFFFFF"
+                            >
+                                <Typography variant="h6">{offer.name}</Typography>
+                                <Typography variant="h4">{offer.description}</Typography>
+                                <Typography variant="body1">{`Start Date: ${offer.startDate
+                                    .toDate()
+                                    .toLocaleDateString()}`}</Typography>
+                                <Typography variant="body1">{`End Date: ${offer.endDate
+                                    .toDate()
+                                    .toLocaleDateString()}`}</Typography>
+                            </Box>
+                        ))}
+                    </Stack>
 
                     <Typography variant="h4" mb={4}>
                         {t('client.psection')}
                     </Typography>
 
                     {propertyDetails ? (
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
-                            <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.pview')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.Column1}
-                                </Typography>
-                            </Box>
+                        <Grid
+                            container
+                            spacing={2}
+                            mt={4}
+                            style={{
+                                background: gradientBackground,
 
-                            <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.floor')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.قات}
-                                </Typography>
-                            </Box>
-
-                            <Box bgcolor="#535C91" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.anumber')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.رقم_شقه}
-                                </Typography>
-                            </Box>
-
-                            <Box bgcolor="#9290C3" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.area')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.متر}
-                                </Typography>
-                            </Box>
-
-                            <Box bgcolor="#070F2B" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.pmeter')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.سعر_متر}
-                                </Typography>
-                            </Box>
-
-                            <Box bgcolor="#1B1A55" p={3} borderRadius={8} color="#FFFFFF" boxShadow={3}>
-                                <Typography variant="h5" mb={2}>
-                                    {t('client.total')}
-                                </Typography>
-                                <Typography variant="body1" mb={2}>
-                                    {propertyDetails.سعر_كلي}
-                                </Typography>
-                            </Box>
-                        </Stack>
+                                padding: '20px',
+                                borderRadius: '12px',
+                                height: 'auto',
+                                display: 'flex',
+                                alignItems: 'center', // Center items horizontally
+                                justifyContent: 'space-around' // Add space around items
+                            }}
+                        >
+                            {[
+                                { label: t('client.pview'), value: propertyDetails.Column1, bgcolor: '#070F2B' },
+                                { label: t('client.floor'), value: propertyDetails.قات, bgcolor: '#1B1A55' },
+                                { label: t('client.anumber'), value: propertyDetails.رقم_شقه, bgcolor: '#535C91' },
+                                { label: t('client.area'), value: propertyDetails.متر, bgcolor: '#9290C3' },
+                                { label: t('client.pmeter'), value: propertyDetails.سعر_متر, bgcolor: '#070F2B' },
+                                { label: t('client.total'), value: propertyDetails.سعر_كلي, bgcolor: '#1B1A55' }
+                            ].map((item, index) => (
+                                <Grid item key={index} xs={12} sm={6} md={4}>
+                                    <Box
+                                        bgcolor={item.bgcolor}
+                                        p={3}
+                                        borderRadius={8}
+                                        color="#FFFFFF"
+                                        boxShadow={3}
+                                        textAlign="center"
+                                    >
+                                        <Typography variant="h5" mb={2}>
+                                            {item.label}
+                                        </Typography>
+                                        <Typography variant="body1" mb={2}>
+                                            {item.value}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            ))}
+                            <Typography variant="h5" mb={2}>
+                                {t('client.map')}
+                            </Typography>
+                            {propertyDetails.متر === 152 && (
+                                <img
+                                    src={image152}
+                                    alt="2.0"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '200px',
+                                        marginTop: '20px',
+                                        borderRadius: '12px'
+                                    }}
+                                />
+                            )}
+                            {propertyDetails.متر === 203 && (
+                                <img
+                                    src={image203}
+                                    alt="1.0"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '200px',
+                                        marginTop: '20px',
+                                        borderRadius: '12px'
+                                    }}
+                                />
+                            )}
+                        </Grid>
                     ) : (
                         <Typography variant="h5">No property details found</Typography>
                     )}
@@ -534,33 +633,6 @@ const ClientDashboard = ({ user }) => {
                     ))}
                 </Paper>
             </Snackbar>
-            <Typography variant="h4" mb={3} mt={5}>
-                {t('client.offer')}
-            </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
-                {offers.map((offer) => (
-                    <Box
-                        key={offer.id}
-                        bgcolor="#1B1A55"
-                        p={3}
-                        borderRadius={8}
-                        width={{ xs: '100%', sm: '90%' }}
-                        boxShadow={3}
-                        color="#FFFFFF"
-                    >
-                        <Typography variant="h6">{offer.name}</Typography>
-                        <Typography variant="h4">{offer.description}</Typography>
-                        <Typography variant="body1">{`Start Date: ${offer.startDate
-                            .toDate()
-                            .toLocaleDateString()}`}</Typography>
-                        <Typography variant="body1">{`End Date: ${offer.endDate
-                            .toDate()
-                            .toLocaleDateString()}`}</Typography>
-                    </Box>
-                ))}
-            </Stack>
-
-            {/* Render your offers data using MUI components */}
         </Paper>
     )
 }

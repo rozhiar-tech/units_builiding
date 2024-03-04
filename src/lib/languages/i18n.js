@@ -143,9 +143,10 @@ i18n
                         area: 'Area (متر)',
                         pmeter: 'Price Per Square Meter',
                         total: 'Total Price',
-                        of:'of every Month',
-                        new:'New Messages',
-                        offer:'Offers'
+                        of: 'of every Month',
+                        new: 'New Messages',
+                        offer: 'Offers',
+                        map: ' Map Of your Apartment'
                     }
                 }
             },
@@ -276,10 +277,10 @@ i18n
                         area: 'المساحة (متر)',
                         pmeter: 'سعر المتر المربع',
                         total: 'السعر الكلي',
-                        of:'من كل شهر',
-                        new:'رسائل جديدة',
-                        offer:'عروض'
-
+                        of: 'من كل شهر',
+                        new: 'رسائل جديدة',
+                        offer: 'عروض',
+                        map: ' خريطة شقتك'
                     }
                 }
             },
@@ -409,10 +410,10 @@ i18n
                         area: 'ڕووبەر (متر)',
                         pmeter: 'نرخ بۆ هەر مەتر دووجایەک',
                         total: 'کۆی پارە',
-                        of:'هەموو مانگێک',
-                        new:'نامەی تازە',
-                        offer:'ئۆفەرەکان'
-
+                        of: 'هەموو مانگێک',
+                        new: 'نامەی تازە',
+                        offer: 'ئۆفەرەکان',
+                        map: 'نەخشەی شوقەکەت'
                     }
                 }
             }
