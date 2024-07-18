@@ -11,10 +11,13 @@ import {
     Paper,
     Button,
     Typography,
-    TableSortLabel
+    TableSortLabel,
+    Box,
+    Divider
 } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import { useTranslation } from 'react-i18next'
+import './styles.css'
 
 Modal.setAppElement('#root') // Set the root element for accessibility
 
@@ -185,7 +188,7 @@ const Customers = () => {
                                 <TableCell>{user.firstName}</TableCell>
                                 <TableCell>{user.lastName}</TableCell>
                                 <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.paymentPlan === 'true' ? 'Payment Plan' : 'Paid'}</TableCell>
+                                <TableCell>{user.paymentPlan === true ? 'Payment Plan' : 'Paid'}</TableCell>
                                 <TableCell>{user.downPayment}</TableCell>
                                 <TableCell>{user.propertyCode}</TableCell>
                                 <TableCell>{user.phone}</TableCell>
@@ -209,29 +212,87 @@ const Customers = () => {
                 onRequestClose={closeModal}
                 contentLabel="User Information Modal"
                 className="modal"
+                style={{
+                    content: {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '50%',
+                        borderRadius: '8px',
+                        padding: '20px',
+                        backgroundColor: '#fff',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    },
+                    overlay: {
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                    }
+                }}
             >
                 {selectedUser && (
                     <div className="modal-content">
                         <div className="modal-header">
-                            <Typography variant="h4" sx={{ flexGrow: 1 }}>
+                            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
                                 User Profile
                             </Typography>
-                            <Button color="secondary" onClick={closeModal}>
+                            <Button color="secondary" onClick={closeModal} style={{ marginLeft: 'auto' }}>
                                 Close
                             </Button>
                         </div>
+                        <Divider sx={{ my: 2 }} />
                         <div className="modal-body">
-                            <div className="user-info">
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                    textAlign: 'center'
+                                }}
+                            >
                                 <img
                                     src={selectedUser.profileImage}
                                     alt="User Profile"
-                                    style={{ borderRadius: '50%', height: '100px', width: '100px', objectFit: 'cover' }}
+                                    style={{
+                                        borderRadius: '50%',
+                                        height: '100px',
+                                        width: '100px',
+                                        objectFit: 'cover'
+                                    }}
                                 />
                                 <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                                     {`${selectedUser.firstName} ${selectedUser.lastName}`}
                                 </Typography>
                                 <Typography color="textSecondary">{selectedUser.email}</Typography>
-                            </div>
+                                <Typography variant="body1">
+                                    <strong>Phone:</strong> {selectedUser.phone}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Property Code:</strong> {selectedUser.propertyCode}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Payment Plan:</strong>{' '}
+                                    {selectedUser.paymentPlan === true ? 'Payment Plan' : 'Paid'}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Down Payment:</strong> ${selectedUser.downPayment}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Monthly Payment:</strong> ${selectedUser.monthlyPayment}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Overall Payment:</strong> ${selectedUser.overallPayment}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>Key Payment:</strong> ${selectedUser.keyPayment}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <strong>After Key Payment:</strong> ${selectedUser.afterKeyPayment}
+                                </Typography>
+                            </Box>
                         </div>
                     </div>
                 )}

@@ -19,6 +19,7 @@ import ClientDashboard from './pages/Client-dashboard'
 import Timeline from './pages/Timeline'
 import { Audio } from 'react-loader-spinner'
 import Offers from './pages/Offers'
+import AdminMonthlyPayment from './pages/MonthlyPayment'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -96,6 +97,7 @@ function App() {
                     <Route path="broadcast" element={<Broadcast />} />
                     <Route path="timeline" element={<Timeline />} />
                     <Route path="offers" element={<Offers />} />
+                    <Route path="monthly-payment" element={<AdminMonthlyPayment />} />
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

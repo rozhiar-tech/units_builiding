@@ -7,7 +7,8 @@ import {
     HiLibrary,
     HiChartPie,
     HiChatAlt2,
-    HiClock
+    HiClock,
+    HiCurrencyDollar
 } from 'react-icons/hi'
 import { AiOutlineCoffee } from 'react-icons/ai'
 
@@ -71,6 +72,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         labelKey: 'sidebar.offers',
         path: '/offers',
         icon: <AiOutlineCoffee />
+    },
+    {
+        key: 'monthly-payment',
+        labelKey: 'Monthly Payment',
+        path: '/monthly-payment',
+        icon: <HiCurrencyDollar />
     }
 ]
 

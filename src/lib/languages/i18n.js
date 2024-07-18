@@ -20,7 +20,7 @@ i18n
             en: {
                 translation: {
                     description: {
-                        part2: 'Dania city'
+                        part2: 'Residential Complex'
                     },
                     sales: {
                         tsales: 'Total Sales',
