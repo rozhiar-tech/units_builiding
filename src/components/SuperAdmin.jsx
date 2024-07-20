@@ -14,7 +14,20 @@ import {
     Checkbox,
     Divider
 } from '@mui/material'
-import { collection, addDoc, getDocs, firestore } from '../firebase/initFirebase'
+import {
+    collection,
+    setDoc,
+    getDocs,
+    firestore,
+    auth,
+    createUserWithEmailAndPassword,
+    signOut,
+    signInWithEmailAndPassword,
+    addDoc,
+    doc
+} from '../firebase/initFirebase'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 const SuperAdmin = () => {
     const [roles, setRoles] = useState([])
@@ -40,8 +53,26 @@ const SuperAdmin = () => {
         'employment-law-compliance',
         'property-agreements',
         'tenant-disputes',
-        'security-advisory'
+        'security-advisory',
+        'finance-dashboard',
+        'sales-revenue',
+        'expense-reports',
+        'payroll-data',
+        'maintenance-costs',
+        'financial-reports',
+        'budgets',
+        'payment-processing',
+        'inventory-dashboard',
+        'procurement-orders',
+        'stock-levels',
+        'inventory-reports',
+        'stock-availability',
+        "property-listings",
+        "market-analysis",
+        "property-evaluations",
+        "sales-listings"
     ])
+
     const [newUser, setNewUser] = useState({
         firstName: '',
         lastName: '',
@@ -54,6 +85,8 @@ const SuperAdmin = () => {
         description: '',
         permissions: []
     })
+
+    const { email: adminEmail, password: adminPassword } = useSelector((state) => state.auth)
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -103,14 +136,35 @@ const SuperAdmin = () => {
 
     const handleAddUser = async () => {
         try {
-            await addDoc(collection(firestore, 'Users'), {
-                ...newUser,
+            // Create user in Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+            const userId = userCredential.user.uid
+
+            // Add user data to Firestore with the same ID as auth.uid
+            const { email, password, ...userData } = newUser
+            await setDoc(doc(firestore, 'Users', userId), {
+                ...userData,
+                userId,
                 userType: 'admin'
             })
-            alert('User added successfully!')
+
+            // Re-authenticate the current user
+            await signOut(auth)
+            await signInWithEmailAndPassword(auth, adminEmail, adminPassword)
+
+            // Clear form data after submission
+            setNewUser({
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: '',
+                roleId: ''
+            })
+
+            toast.success('User added successfully!', { position: 'top-right', autoClose: 3000 })
         } catch (error) {
             console.error('Error adding user:', error)
-            alert('Failed to add user.')
+            toast.error('Failed to add user.', { position: 'top-right', autoClose: 3000 })
         }
     }
 
@@ -119,10 +173,10 @@ const SuperAdmin = () => {
             const docRef = await addDoc(collection(firestore, 'Roles'), newRole)
             setRoles([...roles, { id: docRef.id, ...newRole }])
             setNewRole({ name: '', description: '', permissions: [] })
-            alert('Role added successfully!')
+            toast.success('Role added successfully!', { position: 'top-right', autoClose: 3000 })
         } catch (error) {
             console.error('Error adding role:', error)
-            alert('Failed to add role.')
+            toast.error('Failed to add role.', { position: 'top-right', autoClose: 3000 })
         }
     }
 

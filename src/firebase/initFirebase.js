@@ -20,7 +20,8 @@ import {
     getDoc,
     deleteDoc,
     where,
-    query
+    query,
+    setDoc
 } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
@@ -67,5 +68,6 @@ export {
     sendEmailVerification,
     signInWithEmailAndPassword,
     where,
-    query
+    query,
+    setDoc
 }

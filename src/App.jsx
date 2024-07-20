@@ -25,7 +25,23 @@ import LegalDocuments from './pages/LegalDocuments'
 import ComplianceRequirements from './pages/ComplianceRequirements'
 import LegalContracts from './pages/LegalContracts'
 import ComplianceReports from './pages/ComplianceReports'
-
+import FinancialDashboard from './pages/FinancialDashboard'
+import SalesRevenue from './pages/SalesRevenue'
+import ExpenseReports from './pages/ExpenseReports'
+import PayrollData from './pages/PayrollData'
+import MaintenanceCosts from './pages/MaintenanceCosts'
+import FinancialReports from './pages/FinancialReports'
+import Budgets from './pages/Budgets'
+import PaymentProcessing from './pages/PaymentProcessing'
+import InventoryDashboard from './pages/InventoryDashboard'
+import ProcurementOrders from './pages/ProcurementOrders'
+import StockLevels from './pages/StockLevels'
+import InventoryReports from './pages/InventoryReports'
+import StockAvailability from './pages/StockAvailability'
+import PropertyListings from './pages/PropertyListings'
+import MarketAnalysis from './pages/MarketAnalysis'
+import PropertyEvaluations from './pages/PropertyEvaluations'
+import SalesListings from './pages/SalesListings'
 function App() {
     const [user, setUser] = useState(null)
     const [permissions, setPermissions] = useState([])
@@ -93,6 +109,49 @@ function App() {
                     )}
                     {permissions.includes('compliance-reports') && (
                         <Route path="compliance-reports" element={<ComplianceReports />} />
+                    )}
+                    {permissions.includes('finance-dashboard') && (
+                        <Route path="finance-dashboard" element={<FinancialDashboard />} />
+                    )}
+                    {permissions.includes('sales-revenue') && <Route path="sales-revenue" element={<SalesRevenue />} />}
+                    {permissions.includes('expense-reports') && (
+                        <Route path="expense-reports" element={<ExpenseReports />} />
+                    )}
+                    {permissions.includes('payroll-data') && <Route path="payroll-data" element={<PayrollData />} />}
+                    {permissions.includes('maintenance-costs') && (
+                        <Route path="maintenance-costs" element={<MaintenanceCosts />} />
+                    )}
+                    {permissions.includes('financial-reports') && (
+                        <Route path="financial-reports" element={<FinancialReports />} />
+                    )}
+                    {permissions.includes('budgets') && <Route path="budgets" element={<Budgets />} />}
+                    {permissions.includes('payment-processing') && (
+                        <Route path="payment-processing" element={<PaymentProcessing />} />
+                    )}
+                    {permissions.includes('inventory-dashboard') && (
+                        <Route path="inventory-dashboard" element={<InventoryDashboard />} />
+                    )}
+                    {permissions.includes('procurement-orders') && (
+                        <Route path="procurement-orders" element={<ProcurementOrders />} />
+                    )}
+                    {permissions.includes('stock-levels') && <Route path="stock-levels" element={<StockLevels />} />}
+                    {permissions.includes('inventory-reports') && (
+                        <Route path="inventory-reports" element={<InventoryReports />} />
+                    )}
+                    {permissions.includes('stock-availability') && (
+                        <Route path="stock-availability" element={<StockAvailability />} />
+                    )}
+                    {permissions.includes('property-listings') && (
+                        <Route path="property-listings" element={<PropertyListings />} />
+                    )}
+                    {permissions.includes('market-analysis') && (
+                        <Route path="market-analysis" element={<MarketAnalysis />} />
+                    )}
+                    {permissions.includes('property-evaluations') && (
+                        <Route path="property-evaluations" element={<PropertyEvaluations />} />
+                    )}
+                    {permissions.includes('sales-listings') && (
+                        <Route path="sales-listings" element={<SalesListings />} />
                     )}
                 </Route>
                 <Route path="/register" element={<Register />} />
