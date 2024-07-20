@@ -5,7 +5,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Products from './pages/Products'
 import { useEffect, useState } from 'react'
-import { auth, onAuthStateChanged, collection, getDocs, where, query, firestore } from './firebase/initFirebase' // Update the path
+import { auth, onAuthStateChanged, firestore, getDoc, doc } from './firebase/initFirebase'
 import Login from './pages/Login'
 import Orders from './pages/Orders'
 import { ToastContainer } from 'react-toastify'
@@ -20,10 +20,15 @@ import Timeline from './pages/Timeline'
 import { Audio } from 'react-loader-spinner'
 import Offers from './pages/Offers'
 import AdminMonthlyPayment from './pages/MonthlyPayment'
+import SuperAdmin from './components/SuperAdmin'
+import LegalDocuments from './pages/LegalDocuments'
+import ComplianceRequirements from './pages/ComplianceRequirements'
+import LegalContracts from './pages/LegalContracts'
+import ComplianceReports from './pages/ComplianceReports'
 
 function App() {
     const [user, setUser] = useState(null)
-    const [admin, setAdmin] = useState(false)
+    const [permissions, setPermissions] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -32,42 +37,29 @@ function App() {
 
             if (authUser) {
                 try {
-                    const usersCollectionRef = collection(firestore, 'Users')
-                    const q = query(usersCollectionRef, where('userId', '==', authUser.uid))
-                    const querySnapshot = await getDocs(q)
-
-                    if (!querySnapshot.empty) {
-                        const userData = querySnapshot.docs[0].data()
-                        const userType = userData.userType
-                        // console.log('User type:', userType)
-
-                        // Redirect based on user type
-                        if (userType === 'admin') {
-                            // console.log('Admin user')
-                            setAdmin(true)
-                        } else if (userType === 'client') {
-                            // console.log('Client user')
-                            setAdmin(false)
-                        }
-                    }
+                    const userDoc = await getDoc(doc(firestore, 'Users', authUser.uid))
+                    const userData = userDoc.data()
+                    const roleDoc = await getDoc(doc(firestore, 'Roles', userData.roleId))
+                    const roleData = roleDoc.data()
+                    console.log(userData.roleId)
+                    setPermissions(roleData.permissions)
                 } catch (error) {
                     console.error('Error fetching user data:', error)
                 } finally {
-                    setLoading(false) // Set loading to false once user data is fetched
+                    setLoading(false)
                 }
             } else {
-                setLoading(false) // Set loading to false if no authenticated user
+                setLoading(false)
             }
         })
 
         return () => unsubscribe()
-    }, []) // Ensure to include navigate in the dependency array if using it inside the useEffect
+    }, [])
 
     if (loading) {
-        // You can render a loading spinner or any other loading indicator here
         return (
             <div className="bg-black h-screen w-screen flex justify-center items-center">
-                <Audio height="80" width="80" radius="9" color="green" ariaLabel="loading" wrapperStyle wrapperClass />{' '}
+                <Audio height="80" width="80" radius="9" color="green" ariaLabel="loading" wrapperStyle wrapperClass />
             </div>
         )
     }
@@ -75,36 +67,37 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route
-                    path="/"
-                    element={
-                        user && admin ? (
-                            <Layout user={user} />
-                        ) : user && !admin ? (
-                            <ClientDashboard user={user} />
-                        ) : (
-                            <Login />
-                        )
-                    }
-                >
-                    <Route index element={<Dashboard />} />
-                    <Route path="products" element={<Products />} />
-                    <Route path="orders" element={<Orders />} />
-                    <Route path="customers" element={<Customers />} />
-                    <Route path="transactions" element={<Transaction />} />
-                    <Route path="expences" element={<Expences />} />
-                    <Route path="services" element={<Services />} />
-                    <Route path="broadcast" element={<Broadcast />} />
-                    <Route path="timeline" element={<Timeline />} />
-                    <Route path="offers" element={<Offers />} />
-                    <Route path="monthly-payment" element={<AdminMonthlyPayment />} />
+                <Route path="/" element={user ? <Layout user={user} permissions={permissions} /> : <Login />}>
+                    {permissions.includes('super-admin') && <Route path="super-admin" element={<SuperAdmin />} />}
+                    {permissions.includes('dashboard') && <Route index element={<Dashboard />} />}
+                    {permissions.includes('products') && <Route path="products" element={<Products />} />}
+                    {permissions.includes('orders') && <Route path="orders" element={<Orders />} />}
+                    {permissions.includes('customers') && <Route path="customers" element={<Customers />} />}
+                    {permissions.includes('transactions') && <Route path="transactions" element={<Transaction />} />}
+                    {permissions.includes('expences') && <Route path="expences" element={<Expences />} />}
+                    {permissions.includes('services') && <Route path="services" element={<Services />} />}
+                    {permissions.includes('broadcast') && <Route path="broadcast" element={<Broadcast />} />}
+                    {permissions.includes('timeline') && <Route path="timeline" element={<Timeline />} />}
+                    {permissions.includes('offers') && <Route path="offers" element={<Offers />} />}
+                    {permissions.includes('monthly-payment') && (
+                        <Route path="monthly-payment" element={<AdminMonthlyPayment />} />
+                    )}
+                    {permissions.includes('legal-documents') && (
+                        <Route path="legal-documents" element={<LegalDocuments />} />
+                    )}
+                    {permissions.includes('compliance-requirements') && (
+                        <Route path="compliance-requirements" element={<ComplianceRequirements />} />
+                    )}
+                    {permissions.includes('legal-contracts') && (
+                        <Route path="legal-contracts" element={<LegalContracts />} />
+                    )}
+                    {permissions.includes('compliance-reports') && (
+                        <Route path="compliance-reports" element={<ComplianceReports />} />
+                    )}
                 </Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route
-                    path="/client-dashboard"
-                    element={user && !admin ? <ClientDashboard user={user} /> : <Login />}
-                />
+                <Route path="/client-dashboard" element={user ? <ClientDashboard user={user} /> : <Login />} />
             </Routes>
             <ToastContainer position="top-center" autoClose={3000} showProgressBar={true} />
         </Router>

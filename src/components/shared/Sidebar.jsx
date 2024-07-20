@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { Link, useLocation } from 'react-router-dom'
 import { FcDepartment } from 'react-icons/fc'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { DASHBOARD_SIDEBAR_LINKS, DASHBOARD_SIDEBAR_BOTTOM_LINKS } from '../../lib/constants'
-import { auth, signOut } from '../../firebase/initFirebase'
+import { auth, signOut, getDoc, doc, firestore } from '../../firebase/initFirebase'
 import { useTranslation } from 'react-i18next'
 
 const linkClass =
@@ -12,6 +12,22 @@ const linkClass =
 
 export default function Sidebar() {
     const { t } = useTranslation()
+    const [permissions, setPermissions] = useState([])
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            const currentUser = auth.currentUser
+            if (currentUser) {
+                const userDoc = await getDoc(doc(firestore, 'Users', currentUser.uid))
+                const userData = userDoc.data()
+                const roleDoc = await getDoc(doc(firestore, 'Roles', userData.roleId))
+                const roleData = roleDoc.data()
+                setPermissions(roleData.permissions)
+            }
+        }
+
+        fetchUserRole()
+    }, [])
 
     return (
         <div className="bg-neutral-900 w-60 p-3 flex flex-col">
@@ -20,7 +36,7 @@ export default function Sidebar() {
                 <span className="text-neutral-200 text-lg"> {t('description.part2')}</span>
             </div>
             <div className="py-8 flex flex-1 flex-col gap-0.5">
-                {DASHBOARD_SIDEBAR_LINKS.map((link) => (
+                {DASHBOARD_SIDEBAR_LINKS.filter((link) => permissions.includes(link.key)).map((link) => (
                     <SidebarLink key={link.key} link={link} />
                 ))}
             </div>
@@ -35,11 +51,9 @@ export default function Sidebar() {
                         onClick={() => {
                             signOut(auth)
                                 .then(() => {
-                                    // Sign-out successful.
                                     console.log('Sign-out successful.')
                                 })
                                 .catch((error) => {
-                                    // An error happened.
                                     console.log('// An error happened.', error.message)
                                 })
                         }}
@@ -63,7 +77,7 @@ function SidebarLink({ link }) {
             className={classNames(pathname === link.path ? 'bg-neutral-700 text-white' : 'text-neutral-400', linkClass)}
         >
             <span className="text-xl">{link.icon}</span>
-            {t(link.labelKey)} {/* Translate the label using the t function */}
+            {t(link.labelKey)}
         </Link>
     )
 }

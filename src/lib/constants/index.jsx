@@ -8,76 +8,51 @@ import {
     HiChartPie,
     HiChatAlt2,
     HiClock,
-    HiCurrencyDollar
+    HiCurrencyDollar,
+    HiOutlineUserGroup,
+    HiOutlineDocumentSearch,
+    HiOutlineClipboardList,
+    HiOutlineClipboardCheck,
+    HiOutlineClipboard
 } from 'react-icons/hi'
 import { AiOutlineCoffee } from 'react-icons/ai'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
+    { key: 'dashboard', labelKey: 'sidebar.dashboard', path: '/', icon: <HiOutlineViewGrid /> },
+    { key: 'super-admin', labelKey: 'Super Admin', path: '/super-admin', icon: <HiOutlineUserGroup /> },
+    { key: 'products', labelKey: 'sidebar.products', path: '/products', icon: <HiOutlineCube /> },
+    { key: 'orders', labelKey: 'sidebar.orders', path: '/orders', icon: <HiOutlineShoppingCart /> },
+    { key: 'customers', labelKey: 'sidebar.customers', path: '/customers', icon: <HiOutlineUsers /> },
+    { key: 'transactions', labelKey: 'sidebar.transactions', path: '/transactions', icon: <HiOutlineDocumentText /> },
+    { key: 'expences', labelKey: 'sidebar.expences', path: '/expences', icon: <HiChartPie /> },
+    { key: 'services', labelKey: 'sidebar.services', path: '/services', icon: <HiLibrary /> },
+    { key: 'broadcast', labelKey: 'sidebar.broadcast', path: '/broadcast', icon: <HiChatAlt2 /> },
+    { key: 'timeline', labelKey: 'sidebar.timeline', path: '/timeline', icon: <HiClock /> },
+    { key: 'offers', labelKey: 'sidebar.offers', path: '/offers', icon: <AiOutlineCoffee /> },
+    { key: 'monthly-payment', labelKey: 'Monthly Payment', path: '/monthly-payment', icon: <HiCurrencyDollar /> },
     {
-        key: 'dashboard',
-        labelKey: 'sidebar.dashboard',
-        path: '/',
-        icon: <HiOutlineViewGrid />
+        key: 'legal-documents',
+        labelKey: 'Legal Documents',
+        path: '/legal-documents',
+        icon: <HiOutlineDocumentSearch />
     },
     {
-        key: 'products',
-        labelKey: 'sidebar.products',
-        path: '/products',
-        icon: <HiOutlineCube />
+        key: 'compliance-requirements',
+        labelKey: 'Compliance Requirements',
+        path: '/compliance-requirements',
+        icon: <HiOutlineClipboardList />
     },
     {
-        key: 'orders',
-        labelKey: 'sidebar.orders',
-        path: '/orders',
-        icon: <HiOutlineShoppingCart />
+        key: 'legal-contracts',
+        labelKey: 'Legal Contracts',
+        path: '/legal-contracts',
+        icon: <HiOutlineClipboardCheck />
     },
     {
-        key: 'customers',
-        labelKey: 'sidebar.customers',
-        path: '/customers',
-        icon: <HiOutlineUsers />
-    },
-    {
-        key: 'transactions',
-        labelKey: 'sidebar.transactions',
-        path: '/transactions',
-        icon: <HiOutlineDocumentText />
-    },
-    {
-        key: 'expences',
-        labelKey: 'sidebar.expences',
-        path: '/expences',
-        icon: <HiChartPie />
-    },
-    {
-        key: 'services',
-        labelKey: 'sidebar.services',
-        path: '/services',
-        icon: <HiLibrary />
-    },
-    {
-        key: 'broadcast',
-        labelKey: 'sidebar.broadcast',
-        path: '/broadcast',
-        icon: <HiChatAlt2 />
-    },
-    {
-        key: 'timeline',
-        labelKey: 'sidebar.timeline',
-        path: '/timeline',
-        icon: <HiClock />
-    },
-    {
-        key: 'offers',
-        labelKey: 'sidebar.offers',
-        path: '/offers',
-        icon: <AiOutlineCoffee />
-    },
-    {
-        key: 'monthly-payment',
-        labelKey: 'Monthly Payment',
-        path: '/monthly-payment',
-        icon: <HiCurrencyDollar />
+        key: 'compliance-reports',
+        labelKey: 'Compliance Reports',
+        path: '/compliance-reports',
+        icon: <HiOutlineClipboard />
     }
 ]
 
